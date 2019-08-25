@@ -4,20 +4,6 @@
  * 仅传递指针，更改了指向，并没有传递值
  */
 
-//  function setName(obj) {
-//    obj.name = 'aaa'
-//    var obj = new Object()
-//    obj.name = 'ccc'
-//    return obj
-//  }
-
-// var a = new Object()
-//   a.name = 'bbb'
-
-// var aa = setName(a)
-
-// console.log(a.name + ' | ' + aa.name)
-
 var a = {
   num:'1'
 };

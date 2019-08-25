@@ -4,14 +4,15 @@
 
 /**
  * var 部分
+ * 变量提升，会把var 申明提升到最开始运行；赋值会留在那一行，等待运行。
  */
 
-// function double (num) {
-//   console.log(myVariable)
-//   var myVariable
-//   return num*2
+// function double () {
+//   console.log('myVariable: '+myVariable)
+//   var myVariable = 2
+//   console.log('赋值后的myVariable: '+myVariable)
 // }
-// double(3)
+// double()
 
 /**
  * let 部分
@@ -24,9 +25,9 @@
 //   if (value) {
 //     // myVariable的临时死亡区域
 //     // console.log(myVariable)  // 直接抛出错误。如果有赋值，必须等到赋值完成后才能调用
-
+    
 //     let myVariable = 'value 2' // myVariable 的临时死亡区间到此结束
-//     console.log(myVariable)
+//     console.log('let '+myVariable)
 //     return true
 //   }
 //   return false
@@ -63,34 +64,20 @@
 
 /**
  * 类 部分
- * 函数 可以放在任何地方，只要在当前作用域下，就可以被使用。
- * 函数表达式必须先声明，运行后此函数才声明。然后才可以被使用
+ * 类必须先声明，然后才可以被使用
  */
-
 // class Point {
 //   constructor(x, y) {
 //     this.x = x
 //     this.y = y
 //   }
-//   move(dx, dy) {
-//     this.x = dx
-//     this.y = dy
-//   }
 //   console_log() {
 //     console.log('x: ', this.x, 'y: ', this.y)
 //   }
 // }
-
 // // 创建实例
 // var origin = new Point(0, 0)
 // origin.console_log()
-// // 调用实例的方法
-// origin.move(50, 100)
-// origin.console_log()
-
-console.log(typeof a) // undefined
-
-// var c = new a(10); // TypeError: a is not a constructor
 
 var a = class {
   constructor(arg) {
@@ -101,4 +88,10 @@ var a = class {
     return console.log(this.arg)
   }
 }
+
+console.log(typeof a) // undefined
+
+var c = new a(10); // TypeError: a is not a constructor
+console.log(c)
+
 var b = new a(5).console_log()

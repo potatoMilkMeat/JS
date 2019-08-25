@@ -32,7 +32,6 @@ var Book = function (title, time, type) {
   }
 }
 
- // 没有new, 实例化一本书.对象添加到 window上
  var book = Book('JavaScript', '2014', 'js')
  console.log(book)
  

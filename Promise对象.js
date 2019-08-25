@@ -1,21 +1,21 @@
 /**
  * resolve下面的语句其实是可以执行的，那么为什么reject的状态信息在下面没有接受到呢？
  * 这就是因为Promise对象的特点：状态的凝固。
- * new出一个Promise对象时，这个对象的起始状态就是Pending状态，在根据resolve或reject返回Fulfilled状态/Rejected状态。
+ * new出一个Promise对象时，这个对象的起始状态就是Pending状态，在根据resolve或reject返回 Fulfilled 状态/ Rejected 状态。
  */
-let p = new Promise((resolve, reject) => {
-  console.log('Promise - 0')
-  resolve('success') // success
-  console.log('Promise - 1')
-  // reject('false') // Error: "false"
-  console.log('Promise - 2')
-})
+// let p = new Promise((resolve, reject) => {
+//   console.log('Promise - 0')
+//   resolve('success') // success
+//   console.log('Promise - 1')
+//   // reject('false') // Error: "false"
+//   console.log('Promise - 2')
+// })
 
-p.then(result => {
-  console.log(result) // success
-}, result => {
-  console.log(result) // false
-})
+// p.then(result => {
+//   console.log(result) // success
+// }, result => {
+//   console.log(result) // false
+// })
 
 /**
  * Then分别接受resolve和reject的信息，有三种参数形式
@@ -41,15 +41,16 @@ p.then(result => {
  * 在同步执行的时候，Promise对象还处于pending的状态，也说明了这个then返回的是一个Promise对象。
  */
 
-// let p = new Promise((resolve,reject) => {
-//   reject('reject');
-// });
+let p = new Promise((resolve,reject) => {
+  reject('reject');
+});
 
-// let resultP = p.then(null,result => {
-//   console.log(result);
-// });
+let resultP = p.then(null,result => {
+  console.log(result);
+});
 
-// console.log(resultP);
+console.log('p: ',p);
+console.log(resultP)
 
 
 /**

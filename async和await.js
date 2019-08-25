@@ -28,12 +28,6 @@
 //       },wait);
 //   });
 // }
-
-// /*
-// let p1 = sleep(100);
-// let p2 = sleep(200);
-// let p =*/
-
 // sleep(100).then(result => {
 //   console.log('result', result)
 //   return sleep(result + 100);
@@ -44,6 +38,7 @@
 //   console.log('result03',result03);
 // })
 
+// ================================================
 // function sleep(wait) {
 //   return new Promise((res,rej) => {
 //       setTimeout(() => {
@@ -69,44 +64,44 @@
  * .错误处理  try-catch捕捉
  */
 
-// let p = new Promise((resolve,reject) => {
-//   setTimeout(() => {
-//     // resolve('success')
-//     reject('error');
-//   },1000);
-// });
-
-// async function demo(params) {
-//   try {
-//       let result = await p;
-//       return result
-//   }catch(e) {
-//       console.log(e);
-//   }
-// }
-
-// demo().then(result => {
-//   console.log(result)
-// })
-
-
 let p = new Promise((resolve,reject) => {
   setTimeout(() => {
-      reject('error');
+    // resolve('success')
+    reject('error')
   },1000);
 });
 
 async function demo(params) {
-  // try {
-      let result = params;
+  try {
+      let result = await p;
       return result
-  // }catch(e) {
-  //     console.log(e);
-  // }
+  }catch(e) {
+      console.log(e);
+  }
 }
 
-demo(250).then(result => {
+demo().then(result => {
   console.log(result)
-}).catch((err) => {
-  console.log(err);
 })
+
+// ===============================================
+// let p = new Promise((resolve,reject) => {
+//   setTimeout(() => {
+//       reject('error');
+//   },1000);
+// });
+
+// async function demo(params) {
+//   // try {
+//       let result = params;
+//       return result
+//   // }catch(e) {
+//   //     console.log(e);
+//   // }
+// }
+
+// demo(250).then(result => {
+//   console.log(result)
+// }).catch((err) => {
+//   console.log(err);
+// })
