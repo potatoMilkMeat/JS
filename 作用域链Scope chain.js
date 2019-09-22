@@ -22,7 +22,7 @@ function c() {
   d()
 }
 
-a()
-c()
-console.log(x)
+a() // a's x
+c() // undefined
+console.log(x) // 'global'
 console.log(y) // 直接报错 ReferenceError: y is not defined
