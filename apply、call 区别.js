@@ -98,3 +98,6 @@ function log() {
   console.log.apply(console, arg)
 }
 log(1,'sdf',589)
+
+// Array.prototype.push.call(this.screenValue, newObj)  // 导致vue无法触发视图更新
+// Array.prototype.splice.call(this.screenValue, row, 1) // 导致vue无法触发视图更新
