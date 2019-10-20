@@ -1,32 +1,27 @@
-/**
- * call（）与apply（）的作用与区别
- * 每个函数都包含两个非继承而来的方法：apply()和call()。
- * call与apply都属于Function.prototype的一个方法，所以每个function实例都有call、apply属性；
- * call（）方法和apply（）方法的作用相同：改变this指向。
- * call（）：第一个参数是this值没有变化，变化的是其余参数都直接传递给函数。在使用call（）方法时，传递给函数的参数必须逐个列举出来。
- * apply（）：传递给函数的是参数数组
- */
-// function add(c, d){
-//   console.log(this.a , this.b , c , d, (this.a + this.b + c + d))
-//   return this.a + this.b + c + d
+//转换时间格式
+// function formateDate (datetime){
+//   function addDateZero(num) {
+//       return (num < 10 ? "0" + num : num);
+//   }
+//   let d = new Date(datetime);
+//   let formatdatetime = d.getFullYear() + '-' + addDateZero(d.getMonth() + 1) + '-' + addDateZero(d.getDate()) + ' ' + addDateZero(d.getHours()) + ':' + addDateZero(d.getMinutes()) + ':' + addDateZero(d.getSeconds());
+//   return formatdatetime;
 // }
-// var o = {a:1, b:3}
-// add.call(o, 5, 7); // 1 + 3 + 5 + 7 = 16
-// add.apply(o, [10, 20]); // 1 + 3 + 10 + 20 = 34
 
-// ===========================================================
+// console.log(formateDate('2019-09-27T02:31:09.000Z'))
 
-const val = 'globle',
-      a = {
-  val: 'value-a',
-  fun: function (that){
-    (function(){
-      console.log('a 的立即执行',that.val)
-    // })() // a 的立即执行 undefined
-    // }).bind(this)() // a 的立即执行 value-a     等同于  }).bind(a)()
-    }).call(null, a) // a 的立即执行 value-a     等同于  }).call(a)
-    
-  }
-}
 
-a.fun()
+// let cookieExpires = 1 / 24
+
+// function setTokenLostTime () {
+//   let d = new Date()
+//   d.setTime(d.getTime() +  cookieExpires * 24 * 60 * 60 * 1000) // 设置date为当前时间 加的天数
+//   console.log('setTokenLostTime: ', d)
+//   // return Cookies.set(TokenTime, d)
+// }
+// setTokenLostTime()
+
+var time ='2019-09-29T04:15:27.000Z'
+console.log(time)  //2019-09-29T04:15:27.000Z
+var d = new Date(time);
+console.log(d)   //Sun Jan 20 2019 16:43:42 GMT+0800
