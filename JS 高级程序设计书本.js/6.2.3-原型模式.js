@@ -14,10 +14,11 @@ function Person(name,age,job){ // 整个是构造函数 Person
  * 创建两个实例
  */
 var person1 = new Person('chengl', 10, 'work');
-person1.say()
+person1.say() // chengl 10 work
 
 var person2 = new Person('person2', 20, 'work2');
-person2.say()
+person2.say() // person2 20 work2
+person1.say() // person2 20 work2
 
 /**
  * @dec 实例的prototype属性  指向  原型对象（Person.prototype）
@@ -29,7 +30,7 @@ Object.getPrototypeOf(person1) == Person.prototype // true
 Object.getPrototypeOf(person1).name // 'person2'
 
 /**
- * @dec 实例的新的属性  会覆盖原型属性
+ * @dec 实例的新的属性[非引用]  会覆盖原型属性
  * @drc 查找属性  先查找实例属性，如果没有再查找原型属性
  */
 person1.name='chenglong'

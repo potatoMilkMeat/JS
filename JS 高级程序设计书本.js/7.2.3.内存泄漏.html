@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>内存泄漏</title>
+</head>
+<body>
+  <div id="elementDiv" style="height: 200px;background-color:cadetblue;">我是点击区域</div>
+<script>
+function assignHandler(){
+  var element= document.getElementById('elementDiv');
+  var id=element.id
+
+  element.onclick=function(){
+    console.log(id)
+  }
+
+  element=null
+}
+window.onload=function(){
+  var element;
+  assignHandler()
+}
+</script>
+</body>
+</html>
