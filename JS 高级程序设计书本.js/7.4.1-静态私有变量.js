@@ -15,7 +15,7 @@
     this.getName=getPublicName;
   }
 
-  // 特权方法
+  // 特权方法 - 原型
   MyObject.prototype.publicMethod= function(){
     privateVariable++;
     return getPrivateVariable()
