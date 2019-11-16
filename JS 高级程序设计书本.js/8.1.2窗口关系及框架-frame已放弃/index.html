@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>窗口关系及框架</title>
+</head>
+<frameset rows="160, *">
+    <frame src="frame.html" name="topFrame"></frame>
+    <frameset cols="50%,50%">
+        <frame src="anotherframe.html" name="leftFrame"></frame>
+        <frame src="yetanotherframe.html" name="rightFrame"></frame>
+    </frameset>
+  </frameset>
+
+<body>
+    <style type="text/css">
+      body {margin: 0;padding: 0;}
+      div{position: absolute;width: 100%;height: 100%;}
+      #topFrame{width: 100%;height: 100px;border-width: 0; background-color: #fff;}
+      #leftFrame{width: 50%;float: left;height: 100%;border-width: 0; background-color: #e1fadc;}
+      #rightFrame{width: 50%;height: 100%;float: right;border-width: 0; background-color: #cfcbf6;}
+      </style>
+  <!-- <div>
+      <iframe src="frame.html" id="topFrame" name="topFrame"></iframe>
+      <iframe src="anotherframe.html" id="leftFrame" name="leftFrame"></iframe>
+      <iframe src="yetanotherframe.html" id="rightFrame" name="rightFrame"></iframe>
+  </div> -->
+</body>
+</html>
