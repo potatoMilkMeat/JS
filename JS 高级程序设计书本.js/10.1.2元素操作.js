@@ -77,3 +77,26 @@ document.links // 返回 带 href 特性的 a 元素
  */
 document.implementation.hasFeature('XML','1.0')
 document.implementation.hasFeature('LS-Async','3.0')
+
+/**
+ * 文档写入
+ * write() writeIn() 在页面加载过程中，会向文档写入
+ * open()
+ * close()
+ */
+
+document.write('<h1>'+"01秒后变: " + (new Date()).toString() +'<\/h1>');
+document.writeln("<script>" + console.log((new Date()).toString()) + "<\/script>");
+window.onload=function(){
+  setTimeout(function(){
+    document.write("<html><body><h1>"
+      +"现在时间: "+ (new Date()).toString()
+      +"<\/h1><\/body><\/html>"
+    );
+  }, 1000)
+  
+}
+
+window.open('http://www.baidu.com')
+window.close(this) // 只能关闭用 open打开的页面，否则报错
+// Scripts may close only the windows that were opened by it.
