@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>阻止默认事件，时间状态和阻止冒泡</title>
+  <style>
+  html,body{padding: 0;margin: 0;}
+  code{display: block; background:#444;color: #fff;font-size: 14px;line-height: 18px;white-space: pre-wrap!important;word-wrap: break-word!important;*white-space:normal!important;}
+  </style>
+</head>
+<body>
+
+  <h4>event.preventDefault();</h4>
+  <a id='a' href="http://www.baidu.com" target="_blank">跳到百度  preventDefault()</a>
+  <hr>
+
+  <code>
+    var link= document.getElementById('a');
+    function func(event){
+      console.log('点中的是：\t', event.target.innerHTML);
+      event.preventDefault();
+    }
+    link.addEventListener('click', func,false)
+  </code>
+<script>
+  var link= document.getElementById('a');
+  function func(event){
+    console.log('点中的是：\t', event.target.innerHTML);
+    event.preventDefault();
+    event.stopPropagation();
+  }
+  link.addEventListener('click', func,false)
+  document.body.onclick=function(event){
+    console.log(event.currentTarget.nodeName, event)
+  }
+</script>
+
+
+<h4>event.eventPhase();</h4>
+  <button id='b'>eventPhase 事件处于那一阶段：1捕获；2本身；3冒泡</button>
+  <hr>
+
+<code>
+  var btn=document.getElementById('b');
+  btn.onclick=function(e){
+    console.log('btn: ', e.eventPhase);log(e)
+  }
+
+  document.body.addEventListener('click',function(e){
+    console.log('body true : ', e.eventPhase);log(e)
+  }, true)
+  document.body.onclick=function(e){
+    console.log('body onclick : ', e.eventPhase);log(e)
+  }
+  function log(e){
+    console.log('target:' , e.target , '\n currentTarget:' , e.currentTarget)
+  }
+</code>
+<script>
+  var btn=document.getElementById('b');
+  btn.onclick=function(e){
+    console.log('btn: ', e.eventPhase);log(e)
+  }
+
+  document.body.addEventListener('click',function(e){
+    console.log('body true : ', e.eventPhase);log(e)
+  }, true)
+  document.body.onclick=function(e){
+    console.log('body onclick : ', e.eventPhase);log(e)
+  }
+  function log(e){
+    console.log('target:' , e.target , '\n currentTarget:' , e.currentTarget)
+  }
+</script>
+</body>
+</html>

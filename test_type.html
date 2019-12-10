@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>事件类型</title>
+  <style>
+  html,body{padding: 0;margin: 0;}
+  code{display: block; background:#444;color: #fff;font-size: 14px;line-height: 18px;white-space: pre-wrap!important;word-wrap: break-word!important;*white-space:normal!important;}
+  </style>
+</head>
+<body>
+
+  <h4>DOM 3.0 UI事件 - load</h4>
+  <img id="img" src="http://img4.imgtn.bdimg.com/it/u=2229864841,4232235061&fm=26&gp=0.jpg">
+  <hr>
+
+  <code>
+    // 是否支持
+    var isSupported=document.implementation.hasFeature('UIEvent', '3.0');
+    // load 状态是2，没有捕获和冒泡
+    window.onload=function(event){
+      console.log('loaded \t',event.eventPhase,event)
+    };
+  </code>
+<script>
+  // 是否支持
+  var isSupported=document.implementation.hasFeature('UIEvent', '3.0');
+  // load 状态是2，没有捕获和冒泡
+  window.onload=function(event){console.log('loaded \t',event.eventPhase,event)};
+
+  // 监测图片是否加载 图片开始加载：从设置src开始
+  var img = document.getElementById('img');
+  img.onload=function(event){
+    console.log(console.log('ImgLoaded \t',event.eventPhase,event))
+  }
+
+  // script动态加载  开始加载：从设置src开始，并添加到文档后
+  var script = document.createElement('script');
+  script.onload=function(event){
+    console.log(console.log('ScriptLoaded \t',event.eventPhase,event.target,event))
+  }
+  script.src="./a.js";
+  console.log('src ,unAppendChild')
+  document.body.appendChild(script);
+</script>
+
+<h4>DOM 3.0 UI事件 - unload 测试不出来 </h4>
+<h4>DOM 3.0 UI事件 - resize </h4>
+<script>
+// window.onresize=function(event){
+//   console.log('resize \t',event.timeStamp, event)
+// }
+/**
+ * debounce 防止多次触发
+ * func 执行函数
+ * threshold 时间间隔，低于此时间的不会再次触发
+ * execAsap 尽快执行
+*/
+function debounce(func, threshold, execAsap) {
+    var timer; // 计时器
+    return function debounced() {
+      var _this = this, args = arguments;
+
+      function delayed() {
+        if (!execAsap){ func.apply(_this, args); }
+        timer = null;
+      };
+      
+      if (timer){ clearTimeout(timer); }
+      else if (execAsap){  func.apply(_this, args); }
+
+      timer = setTimeout(delayed, threshold || 100);
+    };
+  }
+  window.onresize = debounce( function(event){
+    console.log('resize \t',event.timeStamp, document.body.clientWidth);
+    }, 400, false)
+</script>
+</body>
+</html>
