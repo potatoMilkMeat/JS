@@ -14,4 +14,3 @@ function fuc(event){
   if(event.inputMethod){console.log(event.inputMethod)}
   console.log(event.type, event.data, event.timeStamp,event)
 }
-
