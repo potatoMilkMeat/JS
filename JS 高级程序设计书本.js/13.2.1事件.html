@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>test</title>
+  <style>
+  html,body{padding: 0;margin: 0;}
+  code{display: block; background:#444;color: #fff;font-size: 14px;line-height: 18px;white-space: pre-wrap!important;word-wrap: break-word!important;*white-space:normal!important;}
+  </style>
+</head>
+<body>
+<script>
+function log(e,ele){
+  console.log(e,ele) // 
+  console.log(e.type, e.target,
+  '\n坐标：', e.x,e.y,
+  '\nreturnValue：',   e.returnValue,
+  '\n path：', e.path,
+  '\n key[alt/ctrl/meta/shift]：',e.altKey, e.ctrlKey,e.metaKey,e.shiftKey,
+  '\n 冒泡：', e.bubbles,'\t 取消冒泡：', e.cancelBubble,)  
+  console.log(e.target.childNodes[0].nodeValue)
+}
+</script>
+  <h4>html元素上事件，this 指向的是点击目标</h4>
+  <p onclick="console.log(this.childNodes[0].nodeValue)">文本 - this.childNodes[0].nodeValue</p>
+  <hr>
+  <h4>html元素上事件，event 指向事件，事件参数</h4>
+  <button id="p1" onclick="log(event,this)">button - func: log(event,this)</button>
+  <hr>
+  <h4>html元素上事件，目标本身 和 document可以忽略</h4>
+  <code>
+function(){
+  with(document){
+    with(this.form){
+      with(this){
+
+      }
+    }
+  }
+}
+</code>
+  <input type="button" value="input - console.log(value+'\n'+URL) this.value, document.URL" onclick="console.log(value+'\n'+URL)">
+  <hr>
+  <form method="POST">
+    <input type="text" name="username" id="username" value="chengl">
+    <input type="button" value="log username" onclick="console.log(username.value)">
+  </form>
+  <hr>
+  <h4>事件，try catch</h4>
+  <input type="button" value="try catch" onclick="try{showMessage();}catch(ex){console.log(ex);}">
+  <script>
+    // function showMessage(){
+    //   console.log('this is showMessage function')
+    // }
+  </script>
+</body>
+</html>
