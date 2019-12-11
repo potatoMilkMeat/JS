@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>设备事件</title>
+  <style>
+  #flex,#flex1{position: fixed;top: 10%;left: 50%;background-color: bisque;height: 150px;width: 150px;margin-left: -75px; overflow: scroll;}
+  #flex1{top: 60%;width: 320px;margin-left: -160px; }
+  </style>
+</head>
+<body>
+  <div id="flex"></div>
+  <div id="flex1"></div>
+  <div id="div" style="height:1200px;background-color: #f2f2f2;">div</div>
+  
+
+<script>
+var id=document.getElementById('div');
+
+window.onorientationchange=function(event){
+  console.log(event,'\n',window.orientation);
+  id.innerText= id.innerText + '\n orientationchange: ' + window.orientation +' : '+ typeof window.orientation;
+};
+
+// 初始 后 的 偏移角度
+var flex=document.getElementById('flex');
+window.addEventListener('deviceorientation', function(event){
+  flex.innerText='偏移角度 \n ' +' alpha: '+ event.alpha.toFixed(2) +'\n beta: '+ event.beta.toFixed(2) + '\n gamma: '+ event.gamma.toFixed(2)+ '\n absolut: '+ event.absolut+ '\n compassCalibrated: '+ event.compassCalibrated;
+  flex.style.webkitTransform='rotate('+ Math.round(event.alpha)+'deg)';
+})
+// 初始 后 的 加速度
+var flex1=document.getElementById('flex1');
+window.addEventListener('devicemotion', function(event){
+  flex1.innerText='加速度 \n ' +' alpha: '+ event.rotationRate.alpha.toFixed(2) +'\n beta: '+ event.rotationRate.beta.toFixed(2) + '\n gamma: '+ event.rotationRate.gamma.toFixed(2)+ '\n 加速度: '+ event.acceleration.x.toFixed(4)+' / '+event.acceleration.y.toFixed(4)+' / '+event.acceleration.z.toFixed(4)+ '\n 地球加速度: '+ event.accelerationIncludingGravity.x.toFixed(4)+' / '+event.accelerationIncludingGravity.y.toFixed(4)+' / '+event.accelerationIncludingGravity.z.toFixed(4);
+  flex1.style.webkitTransform='rotate('+ Math.round(event.alpha)+'deg)';
+})
+</script>
+</body>
+</html>

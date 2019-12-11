@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+</head>
+<body>
+    <button tabindex="1" id="btn" onclick="console.log('按钮被点击',event)" >25</button>
+<script>
+/**
+ * 模拟事件
+ * clientX/Y screenX/Y无效
+ */
+var b=document.getElementById('btn');
+
+var event=document.createEvent('MouseEvent')
+event.initEvent('click',true,true,document.defaultView,0,20,20,20,20,false,false,false,false,1,null)
+setTimeout(function(){b.dispatchEvent(event)}, 1000)
+
+/**
+ * 自定义模拟事件
+ */
+document.body.addEventListener('myEvent', function(event){console.log(event)})
+var event2=document.createEvent('CustomEvent')
+event2.initEvent('myEvent',true,false,document.defaultView,'hello world')
+b.dispatchEvent(event2)
+</script>
+<textarea id="txt" tabindex="0"></textarea>
+<script>
+  /**
+ * 模拟key
+ * 无效 key
+ */
+var txt = document.getElementById('txt')
+txt.addEventListener('keydown', function(event){console.log(event)})
+
+var event1=document.createEvent('KeyboardEvent')
+event1.initEvent('keydown',true,true,document.defaultView,'d',0,'Shift',0)
+
+txt.dispatchEvent(event1)
+</script>
+</body>
+</html>
+

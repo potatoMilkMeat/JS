@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>触摸和手势事件</title>
+  <style>
+  #flex,#flex1{position: fixed;top: 10%;left: 50%;background-color: bisque;height: 150px;width: 150px;margin-left: -75px; overflow: scroll;}
+  #flex1{top: 60%;width: 320px;margin-left: -160px; }
+  </style>
+</head>
+<body>
+  <!-- <div id="flex"></div>
+  <div id="flex1"></div> -->
+  <div id="div" style="position: absolute;top: 0;left: 0;right: 0;bottom: 0; background-color: #f2f2f2;">div</div>
+  
+
+<script>
+var id=document.getElementById('div');
+
+function gesture(event){
+  console.log(event)
+  event.preventDefault();
+  id.innerText= id.innerText + '\n : '+ event.type + ' - ' + event.rotation + ' / ' + event.scale;
+};
+
+document.addEventListener('gesturestart', gesture)
+document.addEventListener('gestureend', gesture)
+document.addEventListener('gesturechange', gesture)
+</script>
+</body>
+</html>

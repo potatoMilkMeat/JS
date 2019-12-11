@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+</head>
+<body>
+<script>
+window.addEventListener("DOMContentLoaded",function(){console.log(event, 'Content Loaded',document.body);});
+window.onload=function(event){console.log(event, 'Load',document.body);};
+// pageshow 无法知道具体是什么
+(function(){
+  var showCount=0;
+  window.addEventListener('pageshow',function(event){showCount++;console.log(event, 'pageshow',document.body, showCount);});
+})()
+
+// hashchange
+window.onhashchange=function(event){console.log(event, 'hashchange',event.oldURL,event.newURL);}
+</script>
+</body>
+</html>

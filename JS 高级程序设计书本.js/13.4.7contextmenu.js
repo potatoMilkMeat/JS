@@ -12,3 +12,11 @@ function fuc(event){
 }
 document.getElementById('div').addEventListener("contextmenu", fuc)
 
+// beforeunload 离开前确认
+window.onbeforeunload=function(event){
+  event.returnValue="确认离开吗？"
+}
+window.open('http://www.baidu.com', '_self')
+
+// DOMContentLoaded
+window.addEventListener("DOMContentLoaded",function(){console.log(event, 'Content Loaded');})
