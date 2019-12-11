@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>表单基础</title>
+</head>
+<body>
+  <form name='myForm' action="http://192.168.0.121:500/api" method="get" target="_blank">
+    <input type="text" name="input" autofocus>
+    <div id="div"></div>
+  </form>
+<script>
+document.forms[0]===document.forms['myForm'] // true
+var form=document.forms['myForm']
+
+// input 输入框校验，非数字为red，输入时背景为黄色
+function filter(event){
+  var ele= event.target
+  if(event.type==="focus"){
+    if(ele.style.backgroundColor !== 'red'){ele.style.backgroundColor = 'yellow';}
+    ele.select()
+  } else if(event.type==="select"){
+    console.log(ele.value.substring(ele.selectionStart,ele.selectionEnd),ele.selectionStart, ele.selectionEnd)
+  } else {
+    if(/[^\d]/.test(ele.value)){
+      ele.style.backgroundColor = 'red'
+    }else{ele.style.backgroundColor = ''}
+  }
+}
+var input = form.elements['input']
+input.onfocus=filter
+input.onblur=filter
+input.onchange=filter
+input.onselect=filter
+
+// 研究光标和选中
+var div= document.getElementById('div')
+function setDiv(){ div.innerText='start: ' + input.selectionStart +'\t end: ' + input.selectionEnd }
+setInterval(setDiv,100)
+
+String.fromCharCode(84) // "T"
+"T".charCodeAt() // 84
+
+</script>
+</body>
+</html>

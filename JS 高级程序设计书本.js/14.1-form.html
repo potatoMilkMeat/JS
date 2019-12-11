@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>表单基础</title>
+</head>
+<body>
+  <form name='myForm' action="http://192.168.0.121:500/api" method="get" target="_blank">
+    <input type="text" name="input" autofocus>
+    <div id="div"></div>
+    <br>
+    <textarea name="txt" id="" cols="30" rows="10"></textarea>
+    <br>
+    <select name='sel'><option value="1">111</option><option value="2" selected>222</option></select>
+    <br>
+    <input name="ok" type="submit" value="提交"><input type="reset" value="重置">
+  </form>
+<script>
+document.forms[0]===document.forms['myForm'] // true
+var form=document.forms['myForm']
+form.length // 4
+form.elements // HTMLFormControlsCollection(4)
+form.action // "http://192.168.0.121:500/api"
+form.name // "myForm"
+form.target //  特性 formTarget
+
+// form.onreset= function(event){console.log(event)}
+form.addEventListener('reset',function(event){console.log(event)})
+form.reset() // 重置 会触发 onreset
+
+form.onsubmit= function(event){console.log(event)}
+form.submit() // 提交 不会触发 onsubmit
+// target='_blank' 时，打开新页面 http://192.168.0.121:500/api?input=aa&txt=ss
+
+form.elements['txt'] === form['txt'] // true
+var txt=form.elements['txt']
+// 属性
+txt.disabled // false
+// txt.disabled=true // 禁用
+txt.form // form元素 只读
+txt.name // 'txt'
+txt.readOnly // false 是否只读，为true 则不能修改
+txt.tabIndex // 0
+txt.type // "textarea"
+// form.elements['input'].type="radio" // 改成单选
+txt.value = '这是js设置的值'
+
+// 避免多次提交，4秒钟后取消
+form.onsubmit=function(event){console.log(event);form.elements['ok'].disabled=true; setTimeout(() => {form.elements['ok'].disabled=false;},4000)}
+
+// focus
+form.elements['input'].onfocus=function(event){console.log(event);}
+// form.elements['input'].focus() // html5 特性 autofocus
+form.elements['input'].onblur=function(event){console.log(event)}
+
+</script>
+</body>
+</html>
