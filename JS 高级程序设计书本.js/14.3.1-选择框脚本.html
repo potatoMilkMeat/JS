@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>选择框脚本</title>
+</head>
+<body>
+  <h4>在输入字符足够的情况下，自动聚焦到下个。3 3 4</h4>
+  <select name="" id="select" multiple  style="width: 150px;" size="10">
+    <option value="val-1">text1</option>
+    <option value="val-2">text2</option>
+    <option value="val-3">text3</option>
+    <option value="val-4">text4</option>
+  </select>
+  <div style="display: inline-block;width: 80px;padding: 10px;">
+    <button onclick="down(2)">向下</button>
+    <button onclick="down(-1)">向上</button>
+    <button onclick="move(1)">向右》</button>
+    <button onclick="move(0)">向左《</button>
+  </div>
+  <select name="" id="select1" multiple  style="width: 150px;" size="10">
+    <option value="v-1">1</option>
+    <option value="v-2">2</option>
+    <option value="v-3">3</option>
+    <option value="v-4">4</option>
+  </select>
+  <h4>增加项</h4>
+  <label>text: <input type="text" name="" id="txt"></label>
+  <button onclick="addTxt()">增加此项</button><br>
+  <label>text: <input type="number" name="" id="index"></label>
+  <button onclick="removeLase()">删除指定项</button>
+  <h4>默认选中项 eg: 0,1 </h4>
+  <label>输入数字:<input type="text" name="" id="t"></label>
+  <button onclick="setChecked()">选中此项</button>
+  
+  <h4>选中的值</h4>
+  <div id="p"></div>
+<script>
+select=document.getElementById('select')
+select1=document.getElementById('select1')
+p=document.getElementById('p')
+txt=document.getElementById('txt')
+t=document.getElementById('t')
+
+select.selectedIndex // 选中项的第一个
+select.value // 选中项的第一个
+
+select.options[0].index // 第一个option 
+select.options[0].label
+select.options[0].selected
+select.options[0].text
+select.options[0].value
+
+select.options[2].text='new txt3'
+
+// 增加项
+// function addTxt(event){
+//   var option=document.createElement('option')
+//   option.text=txt.value
+//   select.add(option, select.options[select.options.length]) // select.add(option, undefined)
+//   txt.value=""
+// }
+function addTxt(){
+  select.appendChild(new Option(txt.value)) // select.appendChild(new Option(txt.value,txt.value))
+  txt.value=""
+}
+
+function removeLase(){
+  var key = index.value || select.options.length-1
+  select.remove(key)
+}
+
+//设置选中项
+function setChecked(){
+  var target=select
+  var options=target.options
+  var arr=t.value.split(',')
+  for(var i=0,len=arr.length;i<len;i++){
+    options[Number(arr[i])].selected=true;
+  }
+  checked(null, select)
+}
+
+// 已经选中项
+select.addEventListener('click',checked)
+select1.addEventListener('click',checked)
+function checked(event,ele){
+  var target=ele || event.target.parentElement
+  var options=target.options
+  var arr=new Array()
+  // console.log(target, options,target.selectedIndex)
+  for(var i=options.selectedIndex,len=options.length;i<len;i++){
+    if(options[i].selected){
+      arr.push({value: options[i].value, text: options[i].text, laber: options[i].laber})
+      }
+  }
+  p.innerHTML=JSON.stringify(arr)
+  return arr
+}
+
+// 移动项
+function move(num){
+  var from,to
+  switch (num) {
+    case 0:
+      from=select1;
+      to=select;
+      break;
+    case 1:
+      from=select;
+      to=select1;
+      break;
+  
+    default:
+      break;
+  }
+  while(from.options.selectedIndex !== -1){
+    to.appendChild(from.options[from.selectedIndex])
+  }
+}
+
+// 移动顺序
+function down(n){
+  var option=select.options[select.selectedIndex]  
+  select.insertBefore(option, select.options[option.index + n])
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>复制粘贴</title>
+</head>
+<body>
+    <textarea id="div" style="background-color: #f0f0f0;height:100px;">01</textarea>
+<script>
+div=document.getElementById('div')
+
+function copy(event,value){
+  var c=(event.clipboardData) // || window.clipboardData || window.Clipboard
+	console.log(event,'\n', event.type, c.getData("text"))
+
+  value = value || c.getData("text")
+  if(!/^\d*$/.test(value)){ event.preventDefault();console.log('没有以数字开头，被拒绝') }
+  value = '这次输入：'+value+ '\n'
+  console.log(value)
+  c.setData('text/plain', value)
+}
+
+div.onpaste=copy
+div.oncopy=copy
+
+</script>
+</body>
+</html>

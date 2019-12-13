@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>自动切换聚焦</title>
+</head>
+<body>
+  <h4>在输入字符足够的情况下，自动聚焦到下个。3 3 4</h4>
+  <form action="">
+    <input type="text" id="txt1" maxlength="3" tabindex="0">
+    <input type="text" id="txt2" maxlength="3" tabindex="1">
+    <input type="text" id="txt3" maxlength="4" tabindex="2">
+</form>
+<hr><br>
+<h4>其他输入类型 = 有些弱智</h4>
+<form action="">
+  <input type="email">
+  <input type="url" >
+  <button type="submit">提交</button>
+</form>
+<hr><br>
+<h4>数值范围 ; number range datetime date month week time</h4>
+<input type="number">
+<input type="range">
+<input type="date">
+<input type="datetime-local">
+<input type="month">
+<input type="week">
+<input type="time">
+<h4>输入模式，正则匹配 pattern="\d+" 比较有用</h4>
+<form action="">
+  <input type="text" required pattern="\d+" id="num"><span id="p"></span>
+  <br>
+  <button type="submit">提交</button>
+</form>
+<script>
+txt1=document.getElementById('txt1')
+txt2=document.getElementById('txt2')
+txt3=document.getElementById('txt3')
+num=document.getElementById('num')
+
+function tabForward(event){
+  var target=event.target
+
+  if(target.value.length == target.maxLength){
+    var form=target.form
+    for(var i=0,len=form.elements.length;i<len;i++){
+
+      if(form.elements[i]==target){
+        if(form.elements[i+1]){form.elements[i+1].focus() }
+        return;
+      }
+
+    }
+  }
+}
+
+txt1.addEventListener('keyup', tabForward)
+txt2.addEventListener('keyup', tabForward)
+txt3.addEventListener('keyup', tabForward)
+window.onload = function(){
+  txt1.focus()
+}
+
+// h5  required 不能为空;  input textarea select
+txt1.required // false
+txt1.required=true // 改成true 不能为空
+'required' in txt1 // true 浏览器是否支持
+
+// 其他输入类型 input ; email url
+// 数值范围 ; number range datetime date month week time
+
+p=document.getElementById('p')
+num.addEventListener('keyup', filter)
+p.innerHTML= num.checkValidity()
+function filter(event){
+  var target=event.target
+  var val=target.value
+  p.innerHTML= target.checkValidity()
+}
+</script>
+</body>
+</html>
