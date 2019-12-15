@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>canvas基本用法</title>
+</head>
+<body>
+  <canvas id="drawing" width="400" height="200" style="background: #f2f2f2"> 不支持canvas 所显示的文字。<br>浏览器包括：ie8及以前。 </canvas>
+
+<script>
+drawing=document.getElementById('drawing')
+if(drawing.getContext){ // 是否支持 canvas 元素
+  // var context=drawing.getContext('2d')
+  // context.fillStyle='rgba(0,0,255,0.5)' // 填充色
+  // context.strokeStyle='green' // 描边色
+
+  // context.strokeRect(0,0,50,50) // 描边
+  // context.fillRect(100,0,50,50) // 正方形
+
+  // context.fillStyle='rgba(0,255,255,0.5)' // 填充色
+  // context.fillRect(125,25,50,50) // 正方形
+  var arr=[
+    {strokeRect: 'green', x:0, y:0, width:50, height:50},
+    {fillStyle: 'rgba(0,0,255,0.5)', x:100, y:0, width:50, height:50},
+    {fillStyle: 'rgba(0,255,255,0.5)', x:125, y:25, width:50, height:50},
+    {clear: true, x:130, y:30, width:15, height:15}
+  ]
+  drawRect(drawing, arr)
+
+  exportImg(drawing)
+}
+
+// 导出图像的数据URI，并添加到body中
+function exportImg(drawing){
+  // drawing.toDataURL('image/jpeg').length // 1051
+  // drawing.toDataURL('image/png').length // 2518
+  var img=document.createElement('img')
+  img.src=drawing.toDataURL('image/png')
+  document.body.appendChild(img)
+
+  // img.src=drawing.toDataURL('image/jpeg')
+  // document.body.appendChild(img)
+}
+
+// 绘制正方形，并擦除交汇处的小正方形
+function drawRect(drawing, arr){
+  var context=drawing.getContext('2d')
+  if(arr && arr.length){
+    for(var i=0,len=arr.length;i<len;i++){
+      let obj = arr[i]
+
+      // 擦除 矩形
+      if(obj.clear){
+        context.clearRect(obj.x,obj.y,obj.width,obj.height)
+      }
+      // 画 矩形
+      else if(obj.fillStyle && obj.fillStyle !== ''){
+        context.fillStyle=obj.fillStyle
+        context.fillRect(obj.x,obj.y,obj.width,obj.height)
+      }
+      // 描边 矩形
+      else if(obj.strokeStyle && obj.strokeStyle !== ''){
+        context.strokeStyle=obj.strokeStyle
+        context.strokeRect(obj.x,obj.y,obj.width,obj.height)
+      }
+    }
+  }
+}
+
+</script>
+</body>
+</html>

@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>canvas基本用法</title>
+  <style>
+  #time{width: 240px; height: 40px;text-align: center;font-size: 20px;line-height: 40px;background: coral;}
+  </style>
+</head>
+<body>
+  <canvas id="drawing" width="200" height="200" style="background: #f2f2f2; padding: 20px;"> 不支持canvas 所显示的文字。<br>浏览器包括：ie8及以前。 </canvas>
+  <canvas id="draw" width="200" height="200" style="background: #f2f2f2; padding: 20px;"> 不支持canvas 所显示的文字。<br>浏览器包括：ie8及以前。 </canvas>
+<script>
+drawing=document.getElementById('drawing')
+var c=drawing.getContext('2d')
+c.shadowBlur=4;c.shadowOffsetX=5;c.shadowOffsetY=5;c.shadowColor='rgba(0,255,0,0.5)'
+c.fillStyle='#00ffff';c.fillRect(0,0,100,100);
+c.fillStyle='#ffff00';c.fillRect(75,75,100,100);
+
+// 渐变
+draw=document.getElementById('draw')
+var cx=draw.getContext('2d');
+
+function creatLineGradient(context,x,y,width,height,startColor,endColor){
+  var gradient= context.createLinearGradient(x,y,x+width,y+height)
+  gradient.addColorStop(0, startColor)
+  gradient.addColorStop(1, endColor)
+  return gradient
+}
+
+cx.fillStyle=creatLineGradient(cx,0,0,100,100,'green','#0088ff'); //仅支持 左到右 (0,0,100,0) 上到下 (0,0,0,100) 斜角 (0,0,100,100)
+cx.fillRect(0,0,100,100);
+
+function creatRadiaGradient(context,x,y,radius,x2,y2,radius2,startColor,endColor){
+  var gradient= context.createRadialGradient(x,y,radius,x2,y2,radius2)
+  gradient.addColorStop(0, startColor)
+  gradient.addColorStop(1, endColor)
+  return gradient
+}
+cx.translate(150,50)
+cx.fillStyle=creatRadiaGradient(cx,0,0,10,0,0,65,'yellow','red'); //仅支持 左到右 (0,0,100,0) 上到下 (0,0,0,100) 斜角 (0,0,100,100)
+
+cx.arc(0,0,50,0,Math.PI*2)
+cx.fill();
+</script>
+</body>
+</html>

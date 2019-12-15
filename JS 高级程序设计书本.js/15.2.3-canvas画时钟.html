@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>canvas基本用法</title>
+  <style>
+  #time{width: 240px; height: 40px;text-align: center;font-size: 20px;line-height: 40px;background: coral;}
+  </style>
+</head>
+<body>
+  <canvas id="drawing" width="200" height="200" style="background: #f2f2f2; padding: 20px;"> 不支持canvas 所显示的文字。<br>浏览器包括：ie8及以前。 </canvas>
+  <div id="time">1232</div>
+<script>
+var arr=[
+  {move: true,x:100,y:0},
+  {arc:true,x:0,y:0,radius:100,startAngle:0,endAngle: 2*Math.PI, len:10}
+]
+var arrH=[ {line: true,x:0,y:-40} ]
+var arrM=[ {line: true,x:0,y:-54} ]
+var arrS=[ {line: true,x:0,y:-66} ]
+drawing=document.getElementById('drawing')
+time=document.getElementById('time')
+function clock(angleH,angleM,angleS){
+  if(drawing.getContext){ // 是否支持 canvas 元素
+    H=drawing.getContext('2d');
+    if(H.strokeStyle == '#000000'){H.translate(100,100);}
+    creatBg() // 画白色蒙住背景
+    drawTxt() // 文字
+    drawArc(arr, '#5ad482')// 画圆环
+    drawLine(arrS, 'blue', angleS) // 画秒针
+    drawLine(arrM, 'green', angleM)// 画分针
+    drawLine(arrH, 'red', angleH) // 画时针
+  }
+}
+// 清除画布 实际上是画白色
+function creatBg(){
+  H.fillStyle="#f2f2f2";  
+  H.beginPath();  
+  H.fillRect(-100,-100,drawing.width,drawing.height);  
+  H.closePath();
+}
+
+// 换文字和刻度
+function drawTxt(fillStyle){
+  var len=-78;
+  H.beginPath()
+  H.fillStyle=fillStyle || '#000000'
+  H.strokeStyle=fillStyle || '#000000'
+  H.font='bold 16px Arial'
+  H.textAlign='center'
+  H.textBaseline='middle'
+  for(let i=1;i<13;i++){
+    H.fillText(i.toString(),-len*Math.sin(Math.PI/180 * i*30),len*Math.cos(Math.PI/180 * i*30))
+    H.moveTo((-len*0.87)*Math.sin(Math.PI/180 *i*30),len*0.87*Math.cos(Math.PI/180 * i*30))
+    H.lineTo((-len*0.82)*Math.sin(Math.PI/180 *i*30),len*0.82*Math.cos(Math.PI/180 * i*30))
+  }
+  for(let j=0;j<60;j++){
+    H.moveTo((-len*0.90)*Math.sin(Math.PI/180 *j*6),len*0.90*Math.cos(Math.PI/180 * j*6))
+    H.lineTo((-len*0.88)*Math.sin(Math.PI/180 *j*6),len*0.88*Math.cos(Math.PI/180 * j*6))
+  }
+  H.stroke()
+}
+
+function drawLine(arr,strokeStyle, angle){
+  angle = angle || 0
+  H.strokeStyle=strokeStyle || '#000000'
+  if(arr && arr.length){
+    H.beginPath()
+    for(var i=0,len=arr.length;i<len;i++){
+      let obj = arr[i]
+      if(obj.line){
+         var lenS=-obj.y*0.2,lenL=-obj.y;
+         var SX = Math.round(lenS*Math.sin(Math.PI/180 *angle))
+         var SY = Math.round(lenS*Math.cos(Math.PI/180 *angle))
+         var LX = Math.round(lenL*Math.sin(Math.PI/180 *angle))
+         var LY = Math.round(lenL*Math.cos(Math.PI/180 *angle))
+          // console.log(obj.x,lenS,' - ',obj.x,obj.y,lenS,lenL)
+          // console.log(SX,SY,' - ',LX,-LY)
+          H.moveTo(-SX,SY)
+          H.lineTo(LX,-LY)  
+      }
+    }
+    // H.rotate(Math.PI / 180 * angle)
+  }
+  H.stroke()
+}
+
+// 画路径 圆弧
+function drawArc(arr,strokeStyle){
+  H.strokeStyle=strokeStyle || '#000000'
+  if(arr && arr.length){
+    H.beginPath()
+    for(var i=0,len=arr.length;i<len;i++){
+      let obj = arr[i]
+      if(obj.move){ H.moveTo(obj.x,obj.y) }// 移动到
+      else if(obj.arc){ var counterclockwise=obj.counterclockwise; /* 画 弧形 */
+        var radius=obj.radius, arcLen=obj.len;
+        do {
+          radius--;arcLen--;
+          H.arc(obj.x,obj.y,radius,obj.startAngle,obj.endAngle,counterclockwise);
+        } while (arcLen);
+      }
+    }
+    // console.log('isPointInPath: ', context.isPointInPath(100,100))
+  }
+  H.stroke()
+}
+
+function setTime(){
+  var myDate = new Date(),angles= new Array(),hours,minutes,seconds,milliseconds
+  hours= myDate.getHours()>11 ? myDate.getHours()-12 : myDate.getHours();
+  minutes=myDate.getMinutes();
+  seconds= myDate.getSeconds();
+  milliseconds=myDate.getMilliseconds();
+  angles.push(hours*30 + Math.round(minutes/2))
+  angles.push(minutes*6 + Math.round(seconds/10))
+  angles.push(seconds*6 + Math.round(milliseconds*0.006))
+
+  var txt =  myDate.getHours()>11 ? '下午\t' : '上午\t',h,m,s,ms;
+  h= hours > 9 ? hours : '0'+hours;
+  m = minutes > 9 ? minutes : '0'+minutes;
+  s= seconds > 9 ? seconds : '0'+seconds;
+  ms= milliseconds > 99 ? milliseconds : milliseconds > 9 ? '0'+milliseconds : '00'+milliseconds;
+  txt += h;
+  txt +=':' + m;
+  txt +=':' + s;
+  txt +=' - ' +ms;
+  time.innerText=txt
+  return angles
+}
+window.onload=function(){
+  var arr = setTime();
+  clock(arr[0],arr[1],arr[2])
+
+  setInterval(() => {
+    var arr = setTime();
+    clock(arr[0],arr[1],arr[2])
+  }, 83)
+}
+</script>
+</body>
+</html>

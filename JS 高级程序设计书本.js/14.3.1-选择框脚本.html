@@ -91,7 +91,7 @@ function checked(event,ele){
   var options=target.options
   var arr=new Array()
   // console.log(target, options,target.selectedIndex)
-  for(var i=options.selectedIndex,len=options.length;i<len;i++){
+  for(var i=0,len=options.length;i<len;i++){
     if(options[i].selected){
       arr.push({value: options[i].value, text: options[i].text, laber: options[i].laber})
       }

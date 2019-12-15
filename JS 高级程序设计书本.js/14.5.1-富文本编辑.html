@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>富文本编辑</title>
+  <style>
+    #richedit,#div{border: 1px solid #ddd;height: 200px;background: #f2f2f2;}
+  </style>
+</head>
+<body>
+  <p>iframe</p>
+<iframe name='richedit' id="richedit" src="14.5.1-blank.html" frameborder="1" style="width:100%;"></iframe>
+<hr>
+<p>div</p>
+<div id="div">111<p>p文本</p></div>
+<script>
+div=document.getElementById('div')
+iframe=frames['richedit']
+
+// 双击开启编辑，并聚焦，失焦不可编辑
+document.body.addEventListener('dblclick', edited)
+function edited(event){
+  event.target.contentEditable='true'
+  event.target.focus()
+  adddelEdit(event.target)
+}
+// 失焦不可编辑
+function adddelEdit(target){
+  target.addEventListener('blur',() => {target.contentEditable="inherit"})
+}
+
+// 手动开启编辑
+window.onload=function(){
+  iframe.document.designMode='on'
+}
+// div.contentEditable='true'
+
+iframe.document.execCommand('bold',false,null)
+
+// 富文本选区
+function doselection(){
+  s=iframe.getSelection()
+  if(s.anchorNode !== null){
+    stxt=s.toString();console.log(stxt) // 取得选中文字
+    var range=s.getRangeAt(0) // 取得选区范围
+    // 突出显示选择的文本
+    // var span=document.createElement('span')
+    // span.style.backgroundColor='yellow'
+    // range.surroundContents(span)
+  }
+  
+}
+
+window.onload=function(){ doselection() }
+iframe.onclick=function(event){ doselection() }
+// iframe.document.body.onkeyup=(event) => { doselection() }
+</script>
+</body>
+</html>
