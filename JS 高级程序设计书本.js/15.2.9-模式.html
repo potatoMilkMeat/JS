@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>canvas- 模式</title>
+  <style>
+  #time{width: 240px; height: 40px;text-align: center;font-size: 20px;line-height: 40px;background: coral;}
+  </style>
+</head>
+<body>
+  <!-- <img src="15.2.9-模式red.jpg"> -->
+  <img src="15.2.9-模式red.gif"><img src="15.2.9-模式red.png"><br>
+  <canvas id="draw" width="512" height="512" style="border: 1px solid #ddd; padding: 20px;"> 不支持canvas 所显示的文字。<br>浏览器包括：ie8及以前。 </canvas>
+<script>
+// 模式
+var draw=document.getElementById('draw')
+var cx=draw.getContext('2d');
+var img=document.images[1];
+window.onload=function(){
+  pattern=cx.createPattern(img, 'repeat');
+  cx.fillStyle=pattern;cx.fillRect(0,0,512,512);
+}
+
+// 使用图像数据
+imgData=cx.getImageData(0,0,10,10)
+// ImageData {data: Uint8ClampedArray(400), ...}
+// height: 10
+// width: 10
+
+
+</script>
+</body>
+</html>

@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>canvas- base64研究</title>
+
+</head>
+<body>
+  <img src="dot.png"><br>
+  <!-- <img src="15.2.9-flower.gif"><br> -->
+  <canvas id="draw" width="2" height="1" style="border: 1px solid #ddd; padding: 10px;"> 不支持canvas 所显示的文字。<br>浏览器包括：ie8及以前。 </canvas>
+<script>
+var draw,cx,img,a,b,baseZiDian,arr=[], baseArr=[],imgStr;
+window.onload=function(){
+  draw=document.getElementById('draw')
+  cx=draw.getContext('2d');
+  img=document.images[0];
+  // 绘制原始图像
+  cx.drawImage(img,0,0)
+  a=draw.toDataURL('image/png').substring(22)
+  b=window.atob(a)
+  baseZiDian=['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z','a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z','0','1','2','3','4','5','6','7','8','9','+','/']
+
+  
+  imgStr=unbase64(a,arr,baseArr)
+  // byteArr = new ArrayBuffer(4 + 2 + 4 + 2 + b.length);
+  // dv = new DataView(byteArr)
+}
+function unbase64(a,arr,baseArr){
+  var Str='';
+      // 将base64转换成数字, 转换成2进制，并补全缺省 2 的6次方式64
+    for(var i=0,len=a.length;i<len;i++){
+      var n
+      for(let j=0,len=baseZiDian.length;j<len;j++){
+        if(a.substring(i,i+1) == baseZiDian[j]) {
+          n=j.toString(2)
+          n=n.length>5 ? n : n.length>4 ? '0'+n : n.length>3 ? '00'+n : n.length>2 ? '000'+n : n.length>1 ? '0000'+n :  '00000'+n ;
+        arr.push(n);
+        }
+      }
+    }
+
+    // 将 arr 转换成原始的数据 baseArr， len=Math.floor(arr.length/4)+1
+    var n,m=Math.floor(arr.length/4),o=4 - arr.length%4,v,x;
+    // console.log(m,o)
+    for(let i=0,len=arr.length;i<len;i+=4){
+      var n2=arr[i+2],n3=arr[i+3];
+      n=arr[i]+arr[i+1]
+      n=n2 ? n+n2 : n
+      n=n3 ? n+n3 : n
+
+      for(let j=0,len=Math.floor(n.length/8);j<len;j++){
+        // if(i==4*m){console.log(n.length,i,j,n.substring(j*8,(j+1)*8))} // 最后一行
+        v=n.substring(j*8,(j+1)*8) // 二进制编码
+        v= parseInt(v,2) // 转换成10进制
+        baseArr.push(v>15 ? v.toString(16) : '0'+v.toString(16)); // 16进制保存
+        Str+=String.fromCharCode(v)
+      }
+    }
+    return Str
+  }
+
+  function formatImgData(baseArr){
+    var imgStrdd='';
+    for(let i=0,len=baseArr.length;i<len;i+=16){
+      for(let j=0;j<16;j++){
+        if(baseArr[i+j]) imgStrdd += baseArr[i+j] + ' '
+      }
+      imgStrdd +='\n'
+    }
+    return imgStrdd
+  }
+  // var b=[],c=[],aa='YmluYXJ5AHN0cmluZw==',aaa='binary\x00string';
+  // unbase64(aa, b,c)
+  // c
+  // parseInt(c[0].substring(0,6), 2)
+  // 'b'.charCodeAt() // 98
+
+
+</script>
+</body>
+</html>
