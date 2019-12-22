@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>JSON数据</title>
+</head>
+<body>
+<script>
+window.onload = function () {
+  var url = "20.1.JSON.json"/*json文件url，本地的就写本地的位置，如果是服务器的就写服务器的路径*/
+  xhr('get',url,true)
+}
+
+function xhr(type,url,async=true){
+  var xhr=new XMLHttpRequest(),data=null
+  xhr.onload=function(){
+    if(200<=xhr.status<300 || xhr.status===304){
+      try {
+        data=JSON.parse(xhr.responseText)
+      } catch (error) {
+        console.warn('xhr.responseText 无法JSON格式化\n',error)
+      }
+      try {
+        for(var i=0;i<data.length;i++){
+          console.log(data[i].name,data[i].adds.length);
+        }
+      } catch (error) {
+        console.warn('数据序列化失败 \n',error)
+      }
+      console.log('请求的数据 xhr.status: ',xhr.status,' \t data: ',data)
+    }else {
+      console.warn('请求失败\t xhr.status: ', xhr.status)
+    }
+  }
+  xhr.open(type,url,async)
+  xhr.send(null)
+}
+</script>
+</body>
+</html>
