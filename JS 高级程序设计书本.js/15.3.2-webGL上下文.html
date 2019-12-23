@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>15.3.2-webGL上下文</title>
+</head>
+<body>
+  <canvas id="draw" width="200" height="200" style="background: #f2f2f2;"></canvas>
+
+<script>
+draw=document.getElementById('draw')
+gl=draw.getContext('experimental-webgl')
+if(gl){
+  // 使用webGl
+  gl.clearColor(0,0,0,1) // 指定使用清楚的颜色值
+  gl.clear(gl.COLOR_BUFFER_BIT) // 使用之前定义的颜色来填充
+  gl.viewport(0,0,draw.width,draw.height) // 左下角为(0,0) 定义视口的坐标系
+  // 视口内部的坐标系在视口的 中心，超出视口外坐标会看不到
+}
+// webGL语言和类型与JS差别太大，不做过多了解
+</script>
+</body>
+</html>
