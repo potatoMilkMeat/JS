@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>读取JSON，转换成JS 的对象，可配置保留字段</title>
+<style>
+.div01{box-sizing: border-box;border-right: 1px solid #ccc;border-bottom: 1px solid #ccc;padding: 8px;}
+.eg{font-size: 13px; color: #555;}
+</style>
+</head>
+<body style="padding: 0;margin: 0;">
+  <div class="div01" style="position: absolute;top: 0;left: 0;right: 50%;height: 300px;">
+   <h3>一、填写JSON路径，加载JSON。支持本地</h3>
+   <div class="eg">input type="file"加载，提示是否是json</div>
+
+   <input type="file" name="jsonFile" id="jsonFile" onchange="selectJSON()">
+   <div class="file_resule"></div>
+    <hr>
+    <h4 style="padding: 0;margin:0">JSON 结果 data[0]</h4><div class="eg"> FileReader，数据，打印控制台有log</div>
+    <select id="selectKey" disabled size="6" onchange="selectKeyChange()" style="width: 40%;float: left;">
+    </select>
+  </div>
+  <div class="div01" id="resule" style="position: absolute;top: 0;left: 50%;right: 0;height: 300px;background: #f2f2f2;overflow-y: scroll;">
+  </div>
+
+  <div class="div01" style="position: absolute;top: 300px;left: 0;right: 50%;height: 300px;">
+    <h3>二、填写保留的字段，key1,key2,key3 形式</h3>
+    <textarea name="saveKeys" id="saveKeys" cols="" rows="7" style="width: 100%;">velocity_east,velocity_north,longitude,latitude,time_gps_epoch</textarea>
+    <button onclick="textareaChange()">只保留以上字段</button><br>
+    <div class="eg">右侧只显示前2项，以避免页面崩溃，想看具体数据请打开调试模式</div>
+  </div>
+  <div class="div01" id="resuleData" style="position: absolute;top: 300px;left: 50%;right: 0;height: 400px;background: #f2f2f2;overflow-y: scroll;">
+  </div>
+  <div class="div01" style="position: absolute;top: 600px;left: 0;right: 50%;height: 300px;">
+    <h3>三、生成新数据，更改key 名称，返回新属性</h3>
+    <hr>
+    <div class="eg">objKeyName 格式是JSON格式，用于修改key名称</div>
+    <textarea name="objKeyName" id="objKeyName" cols="" rows="3" style="width: 100%;">[{"oldKey":"longitude", "newkey":"lng"},{"oldKey":"latitude", "newkey":"lat"},{"oldKey":"time_gps_epoch", "newkey":"time"}]</textarea>
+    <div class="eg" style="color: red;">creatValue 重要的是formateData2(data2), 按需要改写 页面中formateData2方法</div>
+    <textarea name="creatValue" id="creatValue" cols="" rows="12" style="width: 100%; white-space: pre;background: #ffffd5;">
+      function formateData2(data2){
+        var newKey="pan",timeTemp= Math.floor(data2[0].time)
+        data2.forEach(ele => {
+          ele.time = Math.floor(ele.time) - timeTemp // 视频时间从0开始
+          ele[newKey] = function(){ return ele.velocity_east / ele.velocity_north } // 计算出角度
+          delete ele.velocity_east // 删除此项
+          delete ele.velocity_northt // 删除此项
+        })
+      }
+    </textarea>
+    <button onclick="changeKeys()">数据生成</button><br>
+  </div>
+  <div class="div01" id="resuleData2" style="position: absolute;top: 600px;left: 50%;right: 0;height: 400px;background: #f2f2f2;overflow-y: scroll;">
+  </div>
+  <div style="position: absolute;top: 1000px;left: 0;right: 0;height: 600px;">
+    <h3>四、JSON 形式的js对象</h3>
+    <textarea name="export" id="export" style="width: 100%; height: 600px;"></textarea>
+    <h3>keys 和data分离</h3>
+    <textarea name="export2" id="export2" style="width: 100%; height: 600px;"></textarea>
+  </div>
+<script>
+var jsonFile,files,reader=new FileReader(),JSONdata,data,keys,dataArr,resule2Text,data2,exportData,exportDataArr={}
+jsonFile = document.querySelector('#jsonFile')
+
+// 选择JSON文件，并把数据保存到JSONdata中，string格式
+function selectJSON(event){
+  jsonFile = jsonFile
+  files = jsonFile.files[0]
+  if(files.type == "application/json"){ 
+    document.querySelector('.file_resule').innerHTML="<span style='color: #fff;background:green'> 确实是json格式"+ files.name +" </span>"
+  }else {
+    document.querySelector('.file_resule').innerHTML="<span style='color: #fff;background:red'> 不是json格式，请重新选择! </span>"
+  }
+  reader.readAsDataURL(files)
+  reader.onload = function (event) {
+    JSONdata = window.atob(this.result.substr(29)) /* reader.result.substr(29)  ('data:application/json;base64,').length ===29 */
+    data = JSON.parse(JSONdata)
+    console.log('data: ',data)
+    showArray0(JSONdata)
+    
+  }
+}
+
+function showArray0(JSONdata){
+  var selectKeyHTML,selected=0
+  keys=Object.keys(data) // 将JSON数据解析
+  for(let i=0,len=keys.length;i<len;i++){
+    selectKeyHTML +='<option title="'+ keys[i] +'"'
+    if(i===0){selectKeyHTML += ' selected' }
+    selectKeyHTML +='>' + keys[i] + '</option>\n'
+  }
+  document.querySelector('#selectKey').innerHTML=selectKeyHTML
+  document.querySelector('#selectKey').disabled=false
+  selectKeyChange()
+}
+// select选中那个字段保留
+function selectKeyChange(event){
+  var selcetValue
+  selcetValue = document.querySelector('#selectKey').value
+  dataArr= data[selcetValue]
+  console.log(dataArr[0])
+  document.querySelector('#resule').innerText=JSON.stringify(dataArr[0],null,4)
+}
+// 文本中需要保留的字段
+function textareaChange(event){
+  var textareaValue
+  textareaValue = document.querySelector('#saveKeys').value
+  textareaValue = textareaValue.split(",")
+  resule2Text = JSON.stringify(dataArr,textareaValue,2)
+  console.log("resule2Text: ", resule2Text )
+  document.querySelector('#resuleData').innerText=JSON.stringify(dataArr[0],textareaValue,4) + JSON.stringify(dataArr[1],textareaValue,4)
+}
+
+function changeKeys(){
+  var objKeyName,creatValue,exp
+  objKeyName = JSON.parse(document.querySelector('#objKeyName').value)
+  if(objKeyName.length){
+    objKeyName.forEach(element => {
+      exp=new RegExp(element.oldKey,'g')
+      resule2Text = resule2Text.replace(exp, element.newkey)
+    })
+  }
+  data2=JSON.parse(resule2Text)
+  // writeData2(data2)
+  formateData2(data2)
+  writeData2(data2)
+}
+
+function writeData2(data2){
+  console.log("data2 结果: ", data2[0])
+  document.querySelector('#resuleData2').innerText=JSON.stringify(data2[0],null,4) + JSON.stringify(data2[1],null,4)
+}
+
+// 处理的方法，最重要的修改
+function formateData2(data2){
+  var newKey="pan",timeTemp= Math.floor(data2[0].time)
+  function getPan(velocity_east,velocity_north){
+    var east=velocity_east,
+        north=velocity_north,
+        pan= Math.floor(Math.atan(Math.abs(velocity_north) / Math.abs(velocity_east)) / (Math.PI / 180))
+    if(east>=0 && north>=0){   pan = 360 - pan
+    }else if(east>=0 && north<=0){ // pan=pan // 不用处理
+    }else if(east<=0 && north<=0){ pan= 180 - pan
+    }else if(east<=0 && north>=0){ pan= 180 + pan }
+    return pan
+  }
+  data2.forEach((ele,index) => {
+    ele.time = Math.floor(ele.time) - timeTemp // 视频时间从0开始
+    ele[newKey] =  getPan(ele.velocity_east,ele.velocity_north)// 计算出角度
+    delete ele.velocity_east // 删除此项
+    delete ele.velocity_north // 删除此项
+  })
+  exportData = JSON.stringify(data2)
+  document.querySelector('#export').innerText=exportData
+
+  // 生成data数据
+  exportDataArr.keys=Object.keys(data2[0])
+  exportDataArr.data=[]
+  data2.forEach((ele,index) => {
+    exportDataArr.data[index]=[]
+    for(let i= 0,len=exportDataArr.keys.length;i<len;i++){
+      exportDataArr.data[index].push(ele[exportDataArr.keys[i]])
+    }
+  })
+  document.querySelector('#export2').innerText=JSON.stringify(exportDataArr)
+}
+
+</script>
+</body>
+</html>
