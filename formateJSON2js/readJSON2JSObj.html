@@ -40,28 +40,72 @@
     <textarea name="objKeyName" id="objKeyName" cols="" rows="3" style="width: 100%;">[{"oldKey":"longitude", "newkey":"lng"},{"oldKey":"latitude", "newkey":"lat"},{"oldKey":"time_gps_epoch", "newkey":"time"}]</textarea>
     <div class="eg" style="color: red;">creatValue 重要的是formateData2(data2), 按需要改写 页面中formateData2方法</div>
     <textarea name="creatValue" id="creatValue" cols="" rows="12" style="width: 100%; white-space: pre;background: #ffffd5;">
-      function formateData2(data2){
-        var newKey="pan",timeTemp= Math.floor(data2[0].time)
-        data2.forEach(ele => {
-          ele.time = Math.floor(ele.time) - timeTemp // 视频时间从0开始
-          ele[newKey] = function(){ return ele.velocity_east / ele.velocity_north } // 计算出角度
-          delete ele.velocity_east // 删除此项
-          delete ele.velocity_northt // 删除此项
-        })
-      }
+        function formateData2(data2){
+          var newKey="pan",timeTemp= Math.floor(data2[0].time),temp=-1
+          function getPan(velocity_east,velocity_north){
+            var east=velocity_east,
+                north=velocity_north,
+                pan= Math.floor(Math.atan(Math.abs(velocity_north) / Math.abs(velocity_east)) / (Math.PI / 180))
+            if(east>=0 && north>=0){   pan = 360 - pan
+            }else if(east>=0 && north<=0){ // pan=pan // 不用处理
+            }else if(east<=0 && north<=0){ pan= 180 - pan
+            }else if(east<=0 && north>=0){ pan= 180 + pan }
+            return pan
+          }
+         
+          data2.forEach((ele,index) => {
+            ele.time = Math.floor(ele.time) - timeTemp // 视频时间从0开始
+            if(temp !== ele.time){ /* 根据时间不同，存储数据，每秒存储一次 */
+              temp = ele.time
+              ele[newKey] =  getPan(ele.velocity_east,ele.velocity_north)// 计算出角度
+              delete ele.velocity_east // 删除此项
+              delete ele.velocity_north // 删除此项
+              data3.push(ele)
+            }else{ delete ele }
+          })
+        
+          
+          exportData = JSON.stringify(data3)
+          document.querySelector('#export').innerText=exportData
+        
+          formateData2Arr()
+        }
+        
+        function formateData2Arr(){
+          var run = document.getElementById('showArrtrue').checked // 不运行
+          document.getElementById('export2').style.display = run=== true ? "inline-block" : "none"
+          if(!data3 || !data3.length){console.log(run);return false;}
+          // 生成data数据
+          if(run){
+            console.log(run,"formateData2Arr")
+            exportDataArr.keys=Object.keys(data3[0])
+            exportDataArr.data=[]
+            data3.forEach((ele,index) => {
+              exportDataArr.data[index]=[]
+              for(let i= 0,len=exportDataArr.keys.length;i<len;i++){
+                exportDataArr.data[index].push(ele[exportDataArr.keys[i]])
+              }
+            })
+            document.getElementById("export2").innerText=JSON.stringify(exportDataArr)
+          }
+        }
     </textarea>
-    <button onclick="changeKeys()">数据生成</button><br>
+    keys 和data分离：
+    <label for="true">开启</label><input type="radio" name="true" id="showArrtrue" value="true" checked onchange="formateData2Arr()">
+    <label for="true">关闭</label><input type="radio" name="true" value="false"  onchange="formateData2Arr()" >
+    <button onclick="changeKeys()" style="margin-left: 30px;">数据生成</button><br>
   </div>
   <div class="div01" id="resuleData2" style="position: absolute;top: 600px;left: 50%;right: 0;height: 400px;background: #f2f2f2;overflow-y: scroll;">
   </div>
   <div style="position: absolute;top: 1000px;left: 0;right: 0;height: 600px;">
     <h3>四、JSON 形式的js对象</h3>
     <textarea name="export" id="export" style="width: 100%; height: 600px;"></textarea>
-    <h3>keys 和data分离</h3>
+    <h3>keys 和data分离
+    </h3>
     <textarea name="export2" id="export2" style="width: 100%; height: 600px;"></textarea>
   </div>
 <script>
-var jsonFile,files,reader=new FileReader(),JSONdata,data,keys,dataArr,resule2Text,data2,exportData,exportDataArr={}
+var jsonFile,files,reader=new FileReader(),JSONdata,data,keys,dataArr,resule2Text,data2,data3=[],exportData,exportDataArr={}
 jsonFile = document.querySelector('#jsonFile')
 
 // 选择JSON文件，并把数据保存到JSONdata中，string格式
@@ -135,7 +179,7 @@ function writeData2(data2){
 
 // 处理的方法，最重要的修改
 function formateData2(data2){
-  var newKey="pan",timeTemp= Math.floor(data2[0].time)
+  var newKey="pan",timeTemp= Math.floor(data2[0].time),temp=-1
   function getPan(velocity_east,velocity_north){
     var east=velocity_east,
         north=velocity_north,
@@ -146,25 +190,42 @@ function formateData2(data2){
     }else if(east<=0 && north>=0){ pan= 180 + pan }
     return pan
   }
+ 
   data2.forEach((ele,index) => {
     ele.time = Math.floor(ele.time) - timeTemp // 视频时间从0开始
-    ele[newKey] =  getPan(ele.velocity_east,ele.velocity_north)// 计算出角度
-    delete ele.velocity_east // 删除此项
-    delete ele.velocity_north // 删除此项
+    if(temp !== ele.time){ /* 根据时间不同，存储数据，每秒存储一次 */
+      temp = ele.time
+      ele[newKey] =  getPan(ele.velocity_east,ele.velocity_north)// 计算出角度
+      delete ele.velocity_east // 删除此项
+      delete ele.velocity_north // 删除此项
+      data3.push(ele)
+    }else{ delete ele }
   })
-  exportData = JSON.stringify(data2)
+
+  
+  exportData = JSON.stringify(data3)
   document.querySelector('#export').innerText=exportData
 
+  formateData2Arr()
+}
+
+function formateData2Arr(){
+  var run = document.getElementById('showArrtrue').checked // 不运行
+  document.getElementById('export2').style.display = run=== true ? "inline-block" : "none"
+  if(!data3 || !data3.length){console.log(run);return false;}
   // 生成data数据
-  exportDataArr.keys=Object.keys(data2[0])
-  exportDataArr.data=[]
-  data2.forEach((ele,index) => {
-    exportDataArr.data[index]=[]
-    for(let i= 0,len=exportDataArr.keys.length;i<len;i++){
-      exportDataArr.data[index].push(ele[exportDataArr.keys[i]])
-    }
-  })
-  document.querySelector('#export2').innerText=JSON.stringify(exportDataArr)
+  if(run){
+    console.log(run,"formateData2Arr")
+    exportDataArr.keys=Object.keys(data3[0])
+    exportDataArr.data=[]
+    data3.forEach((ele,index) => {
+      exportDataArr.data[index]=[]
+      for(let i= 0,len=exportDataArr.keys.length;i<len;i++){
+        exportDataArr.data[index].push(ele[exportDataArr.keys[i]])
+      }
+    })
+    document.getElementById('export2').innerText=JSON.stringify(exportDataArr)
+  }
 }
 
 </script>
