@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>POST 方式和 FormData</title>
+</head>
+<body>
+  <h4>POST 方式和 FormData</h4>
+  <h4>xhr 不能复用，使用后会锁死，再使用就会报错</h4>
+  <form>
+    <input type="text" name="wd" value="111">
+  </form>
+<script>
+var data = new FormData();
+data.append('x-access-token', 'token-admin');
+data.has('x-access-token') // true 有次字段
+
+function creatPostXhr(data){
+  var xhr=new XMLHttpRequest();
+  xhr.onload= function(){
+    console.log('返回结果：responseText/status/readyState ', xhr.responseText, xhr.status, xhr.readyState)
+  }
+  xhr.open('post', '../formateJSON2js/GPS_VID_20190905_111343.json', true)
+  xhr.send(data)
+}
+
+creatPostXhr(data)
+// Form Data
+// x-access-token: token-admin
+creatPostXhr(new FormData(document.forms[0]))
+// Form Data
+// wd: 111
+</script>
+</body>
+</html>
