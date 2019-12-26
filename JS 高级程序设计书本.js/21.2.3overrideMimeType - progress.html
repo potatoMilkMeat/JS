@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>overrideMimeType</title>
+<style>
+code{display: block;font-size: 14px;line-height: 1.2em; background: #444;color: #fff; white-space: pre;}
+</style>
+</head>
+<body>
+<code>
+  常见的MIME类型
+
+  超文本标记语言文本 .html,.html text/html 
+  普通文本 .txt text/plain 
+  RTF文本 .rtf application/rtf 
+  GIF图形 .gif image/gif 
+  JPEG图形 .ipeg,.jpg image/jpeg 
+  au声音文件 .au audio/basic 
+  MIDI音乐文件 mid,.midi audio/midi,audio/x-midi 
+  RealAudio音乐文件 .ra, .ram audio/x-pn-realaudio 
+  MPEG文件 .mpg,.mpeg video/mpeg 
+  AVI文件 .avi video/x-msvideo 
+  GZIP文件 .gz application/x-gzip 
+  TAR文件 .tar application/x-tar 
+
+  xhr.overrideMimeType('text/xml');
+  overrideMimeType 如果设置类型不对，导致出错
+  其作用是：针对某些特定版本的mozillar浏览器的BUG进行修正
+</code>
+<br>
+<h4>进度事件</h4>
+<code>
+  chrome 已经测试支持这些，实际上 readyState 支持更广泛
+                readyState
+  loadstart       1
+  progress        3
+  load            4       // 所有浏览器都支持，但是不与timeout兼容
+  abort           4       // setTimeout(()=>{xhr.abort()}, 20)
+  loadend         4
+  error
+
+  onprogress(event)
+  // Mozilla 浏览器支持
+  if(event.lengthComputable){ html='loading...   '+ event.position + ' / '+ event.totalSize + 'bytes'; }
+  // chrome 浏览器支持
+  if(event.isTrusted){ html='loading...   '+ event.loaded + ' / '+ event.total + 'bytes'; }
+</code>
+<div id="load"></div>
+<script>
+var div=document.getElementById('load'),num,html;
+var xhr=new XMLHttpRequest();
+xhr.onload=function(){ console.log('onload 结果：readyState ', xhr.readyState,'\n', xhr.responseText) }
+xhr.onprogress=function(event){
+  if(!num){console.log('onprogress 结果 ', xhr.readyState,event); num=true;}
+  // Mozilla 浏览器支持
+  if(event.lengthComputable){ html='loading...   '+ Number(event.position/(1024*1024)).toFixed(2) + 'M / '+ event.totalSize + 'bytes'; }
+  // chrome 浏览器支持
+  if(event.isTrusted){ html='loading...   '+  Number(event.loaded/(1024*1024)).toFixed(2) + 'M / '+ event.total + 'bytes'; }
+
+  div.innerText=html
+
+}
+xhr.onloadstart=function(){ console.log('onloadstart 结果 ', xhr.readyState) }
+xhr.onerror=function(){ console.log('onerror 结果 ', xhr.readyState) }
+xhr.onabort=function(){ console.log('onabort 结果 ', xhr.readyState) }
+xhr.onloadend=function(){ console.log('onloadend 结果 ', xhr.readyState) }
+
+xhr.open('get', '../formateJSON2js/GPS_VID_20190905_111343.json',true);
+// xhr.overrideMimeType('text/xml');
+xhr.send(null)
+// setTimeout(()=>{xhr.abort()}, 20)
+</script>
+</body>
+</html>
