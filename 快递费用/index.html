@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>快递价格计算</title>
+  
+  <style>
+  body{font-family: '宋体';}
+  .eg{white-space: pre; background: #fafafa; color: #666;}
+  #jiage{ width: 700px; height: 180px; white-space: pre;}
+  #total{ color: red;}
+  </style>
+</head>
+<body>
+  <h4>快递价格</h4>
+  <div class="eg">    
+    快递分类：    值1               值2             值3              值4
+    ---------------------------------------------------------------------------------
+    偏远地区：    true             false
+    件数：        [1, 4]          [4, 8]        [8, 12]         [12]                // >= arr[0], < arr[1]
+    普通：        [6, 1, 2]    [0, 1, 1.8]    [0, 1, 1.5]   [0, 1, 1.2]        // arr.l=3, [首件运费，续件数，续件数对应续费]
+    偏远：        [10, 1, 4]   [0, 1, 3.2]    [0, 1, 3]     [0, 1, 2.2]
+  </div>
+  <h4>默认价格价格</h4>
+  <textarea name="jiage" id="jiage" cols="" rows="">
+  {
+    "price":[
+      { "count": [1, 4],  "remoteArea": [10, 1, 4],  "area": [6, 1, 2] },
+      { "count": [4, 8],  "remoteArea": [0, 1, 3.2], "area": [0, 1, 1.8] },
+      { "count": [8, 12], "remoteArea": [0, 1, 3],   "area": [0, 1, 1.5] },
+      { "count": [12],    "remoteArea": [0, 1, 2.2], "area": [0, 1, 1.2] }
+    ],
+    "count": 12,
+    "isRemoteArea": 0
+  }
+  </textarea><br><br>
+  <label for="count">商品数量： <input type="number" name="count" id="count" value="0" onkeyup="value=value.replace(/^(0+)|[^\d]+/g,'')" ></label> <button onclick="setCount()">商品数量-生效</button><br><br>
+  偏远地区：<label>是 <input type="radio" name="isRemoteAreaTrue" id="isRemoteAreaTrue" value="1" ></label>
+  <label>否 <input type="radio" name="isRemoteAreaTrue" id="isRemoteAreaFalse" value="0" checked></label>
+  <button  onclick="setRemoteArea()" style="margin-left:83px;">偏远地区-生效</button>
+  <br>
+  <br>
+  <hr>
+  <h4>当前价格 <button style="margin-left: 80px;" onclick="writeTotal()">计算</button></h4>
+  
+  <div id="total">当前价格：<span id="totalTxt" style="width: 140px;font-size: 16px; font-weight: bold;"> 1256</span> 元</div>
+  <script src="./computed.js"></script>
+</body>
+</html>
