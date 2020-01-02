@@ -25,6 +25,29 @@ function isArray(val) {
   return toString.call(val) === '[object Array]';
 }
 
+/**
+ * 确定是不是function
+ * @param {Function} val 
+ */
+function isFunction(val) {
+  return toString.call(val) === '[object Function]';
+}
+
+/**
+ * 确定是不是 正则表达式
+ * @param {RegExp} val 
+ */
+function isRegExp(val) {
+  return toString.call(val) === '[object RegExp]';
+}
+
+/**
+ * 确定是不是 原生JSON
+ * @param {JSON} val
+ */
+function isNativeJSON() {
+  return window.JSON && toString.call(JSON) === '[object JSON]';
+}
 
 /**
  * Determine if a value is an ArrayBuffer
