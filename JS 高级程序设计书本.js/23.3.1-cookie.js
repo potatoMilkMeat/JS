@@ -1,7 +1,7 @@
 // document.cookie 
 // get 时返回所有cookie，以';'分割。
 // set 时，设置新的cookie, 也可以设置多个，以';'分割。
-document.cookie = 'id=chenglong111;goods=pc01'
+document.cookie = 'id=chenglong111; goods=pc01' // 【兼容】新版本不支持设置多个
 document.cookie = 'goods1=pc11'
 
 console.log(document.cookie)
@@ -72,5 +72,11 @@ var cookieUtil = {
 // 设置cookie
 cookieUtil.set('id', '22222')
 
-cookieUtil.unset('goods','/','192.168.0.121',false)
+cookieUtil.unset('goods','/','localhost',false) // 192.168.0.104
 cookieUtil.unset('goods1')
+
+/**
+ * 设置cookie ，path只接受'/',domain 只能设置同域  的顶级  和二级域名
+ * 如果跨域，访问了a，b域名；请在a页面登录（get中带上原来的网址），获得cookie，通过get等重新跳转回b域名，带回cookie，再设置
+ */
+cookieUtil.set('AID', 'chenglong',null,'/','localhost') // localhost // .baidu.com
