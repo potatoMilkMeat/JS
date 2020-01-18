@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>电子书</title>
+  <style>
+    #tool {
+      height: 39px;
+      box-sizing: border-box;
+      padding: 8px 10px 0 10px;
+      font-size: 13px;
+      border-bottom: 1px solid #008000;
+    }
+
+    #txt {
+      position: fixed;
+      top: 40px;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      overflow-y: scroll;
+      padding: 10px 2em;
+      font-size: 1.2rem;
+      line-height: 2.8em;
+    }
+
+    .green {
+      background: rgb(220, 236, 210);
+      color: #008000;
+      padding: 0;
+      margin: 0;
+    }
+    #now{width: 160px;display: inline-block;text-align: center;}
+  </style>
+</head>
+
+<body class="green">
+  <div id="tool">
+
+    <!-- 加载本地txt 编码设置 -->
+    <input type="file" name="" id="input">
+    <span title="如果出现乱码，请切换编码格式">编码：</span>
+    <select id="encoding">
+      <option selected value="GBK">中文 & ANSI</option>
+      <option value="ASCII">纯英文</option>
+      <option value="UTF-8">UTF-8</option>
+      <option value="UTF-16">Unicode</option>
+    </select>
+
+    <!-- 章节跳转 -->
+    <button id="pre">前一章</button>
+    <span id="now"></span>
+    <button id="next">后一章</button>
+    <button id='save'>保存</button>
+
+    <!-- 书签 -->
+    <select id="bookmark"></select>
+  </div>
+  <div id="txt"></div>
+  <script>
+    var input = document.getElementById('input'),
+      txt = document.getElementById('txt'),
+      select = document.getElementById('encoding'),
+      pre = document.getElementById('pre'),
+      now = document.getElementById('now'),
+      next = document.getElementById('next'),
+      save = document.getElementById('save'),
+      bookmark = document.getElementById('bookmark'),
+      markName = '书签',
+      markNum = 0,
+      file, encoding = select.value,
+      n = 1, // n为章节数
+      reg = /(第\d+章) +([^\s]+)/gi, // 章节分段正则
+      book = [],
+      bookData,
+      reader = new FileReader();
+
+    /**
+     * filesChange 选中文本
+     */
+    function filesChange(event) {
+      file = event.target.files[0];
+      if (/text/.test(file.type)) {
+        readerText()
+      }
+    }
+    /**
+     * readerText 处理编码
+     */
+    function readerText() {
+      if (!file) {
+        return;
+      }
+      reader.readAsText(file, encoding);
+    }
+    /**
+     * loaded 将小说内容存储
+     */
+    function loaded(event) {
+      bookData = JSON.parse(JSON.stringify(reader.result));
+      setCookie('bookTotal', bookData.length);
+
+      // 执行抓取
+      if (!book[n]) {
+        spider(bookData)
+      }
+      writeText(n);
+      getBookMark(markName);
+    }
+    /**
+     * writeText 将小说内容【章节】加载到页面
+     */
+    function writeText(n) {
+      if (!book[n]) {
+        spider(bookData)
+      }
+      now.innerText = book[n].title.substr(1, 11);
+      now.setAttribute('title', book[n].title)
+      txt.innerText = book[n].data;
+      setCookie("章节", n)
+    }
+    /**
+     * 设置cookie - 保存
+     */
+    function setCookie(name, n) {
+      var exp = new Date();
+      if (arguments.length === 1) {
+        n = name;
+        name = '章节';
+      }
+      exp.setTime(exp.getTime() + 31536000000); // 365 * 24 * 60 * 60 * 1000
+      document.cookie = name + '=' + n + ';expires=' + exp.toGMTString();
+    }
+    /**
+     * cookie - 读取
+     */
+    function getCookie(name = '章节') {
+      var str = document.cookie;
+      new RegExp(`${name}=([^;]+)`).test(str);
+      return RegExp.$1;
+    }
+    /**
+     * cookie - 读取
+     */
+    function getBookMark(name) {
+      var arr = document.cookie.split('; '),
+        l = arr.length,
+        html = '',
+        i;
+      for (i = 0; i < l; i++) {
+        if (new RegExp(`(${name}\d*)`).test(arr[i])) {
+          var a = arr[i].split('=');
+          html += '<option title="' + book[a[1]].title + '" name="' + a[0] + '" value="' + a[1] + '" >' + book[a[1]].title.substr(1, 11) + '</option>';
+        }
+      }
+
+      bookmark.innerHTML = html;
+    }
+    /**
+     * spider RegExp 将小说内容 按照【章节】区分，每次抓取10章
+     */
+    function spider(str) {
+      var m = 0,
+        num,
+        s,
+        len,
+        lastTitle,
+        title,
+        bookName;
+      
+      if(/\《(.+)\》/.test(str)){
+        setCookie('书名', RegExp.$1)
+      }
+      reg.lastIndex = 0;
+      reg.test(str);
+      s = len = reg.lastIndex;
+      lastTitle = title = RegExp.$1 + ' ' + RegExp.$2;
+
+      while (reg.test(str)) {
+        s = len;
+        len = reg.lastIndex;
+        lastTitle = title;
+        title = RegExp.$1 + ' ' + RegExp.$2;
+        num = Number(lastTitle.substr(1, lastTitle.indexOf('章')-1));
+        num
+          book[num] = {
+            title: lastTitle,
+            data: str.substr(s, len)
+          }
+        
+      }
+    }
+
+    input.addEventListener('change', filesChange);
+    select.addEventListener('change', function () {
+      encoding = select.value;
+      readerText();
+    })
+    reader.onload = loaded;
+    pre.onclick = function () {
+      if (n === 1) {
+        return;
+      }
+      writeText(--n);
+    }
+    next.onclick = function () {
+      if (n === book.length) {
+        return;
+      }
+      writeText(++n);
+    }
+    save.onclick = function () {
+      var arr = document.cookie.split('; '),i = arr.length;
+      while (i) {
+        if(new RegExp(`${markName}(\\d*)`).test(arr[--i])){
+          markNum =  Number(RegExp.$1);
+          break;
+        }
+      }
+      setCookie(markName + (++markNum), n);
+      getBookMark(markName);
+    }
+    bookmark.onchange = function(event){
+      n = Number(event.target.value)
+      writeText(n);
+    }
+    // 没关闭浏览器就可以自动加载
+    window.onload = function () {
+        if(getCookie() !== ''){n = getCookie();}
+
+        if (n !== undefined && bookData) {
+          writeText(n)
+        }
+        getBookMark(markName);
+
+      
+    }
+  </script>
+</body>
+
+</html>
