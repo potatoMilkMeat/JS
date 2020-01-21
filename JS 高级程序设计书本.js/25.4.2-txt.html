@@ -7,37 +7,20 @@
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <title>电子书</title>
   <style>
-    #tool {
-      height: 39px;
-      box-sizing: border-box;
-      padding: 8px 10px 0 10px;
-      font-size: 13px;
-      border-bottom: 1px solid #008000;
-    }
-
-    #txt {
-      position: fixed;
-      top: 40px;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      overflow-y: scroll;
-      padding: 10px 2em;
-      font-size: 1.2rem;
-      line-height: 2.8em;
-    }
-
-    .green {
-      background: rgb(220, 236, 210);
-      color: #008000;
-      padding: 0;
-      margin: 0;
-    }
-    #now{width: 160px;display: inline-block;text-align: center;}
+#tool {height: 39px;box-sizing: border-box;padding: 8px 10px 0 10px;font-size: 13px;border-bottom: 1px solid #008000;}
+#txt {position: fixed;top: 40px;left: 0;right: 0;bottom: 0;overflow-y: scroll;padding: 10px 2em;font-size: 1.2rem;line-height: 2.8em;}
+.green {background: rgb(220, 236, 210);color: #008000;padding: 0;margin: 0;}
+#now{width: 160px;display: inline-block;text-align: center;}
+#bookshelf{position: fixed;top: 0;left:0;right:0;bottom:0;z-index: 10;background: rgb(220, 236, 210);overflow-y: scroll;}
+#bookshelf .book-li{width: 30%;margin: 10px 1.65%;box-sizing: border-box;height:25vh;display: inline-block; cursor: pointer;}
+#bookshelf .book-img{width: 100%;height: 80%;background: rgba(255,255,255, 0.6);position: relative; font-size: 10vh;padding-top:3vh;box-sizing: border-box;text-align: center;}
+#bookshelf p{margin: 0;padding: 0;height: 20%;background: rgba(0,0,0, 0.1);}
   </style>
 </head>
 
 <body class="green">
+  <div id="bookshelf">
+  </div>
   <div id="tool">
 
     <!-- 加载本地txt 编码设置 -->
@@ -60,6 +43,7 @@
     <select id="bookmark"></select>
   </div>
   <div id="txt"></div>
+  <script src="./23.3.4.DB.js"></script>
   <script>
     var input = document.getElementById('input'),
       txt = document.getElementById('txt'),
@@ -69,13 +53,13 @@
       next = document.getElementById('next'),
       save = document.getElementById('save'),
       bookmark = document.getElementById('bookmark'),
-      markName = '书签',
-      markNum = 0,
+      bookshelf = document.getElementById('bookshelf'),
+      bookList = [], // 书架
+      defaultCookie = { name: '', marks: [], n: 1}, // 当前书保存的信息
       file, encoding = select.value,
-      n = 1, // n为章节数
       reg = /(第\d+章) +([^\s]+)/gi, // 章节分段正则
       book = [],
-      bookData,
+      bookData, // 存储的当前书信息
       reader = new FileReader();
 
     /**
@@ -100,15 +84,14 @@
      * loaded 将小说内容存储
      */
     function loaded(event) {
+      var n = defaultCookie.n;
       bookData = JSON.parse(JSON.stringify(reader.result));
-      setCookie('bookTotal', bookData.length);
 
       // 执行抓取
       if (!book[n]) {
         spider(bookData)
       }
       writeText(n);
-      getBookMark(markName);
     }
     /**
      * writeText 将小说内容【章节】加载到页面
@@ -120,42 +103,59 @@
       now.innerText = book[n].title.substr(1, 11);
       now.setAttribute('title', book[n].title)
       txt.innerText = book[n].data;
-      setCookie("章节", n)
+      setCookie()
     }
     /**
      * 设置cookie - 保存
+     * defaultCookie: {name:'', data: { name: '', marks: [], n: 1}}
      */
-    function setCookie(name, n) {
+    function setCookie({name, value}) {
       var exp = new Date();
-      if (arguments.length === 1) {
-        n = name;
-        name = '章节';
+      exp.setTime(exp.getTime() + 2522880000000); // 80 * 365 * 24 * 60 * 60 * 1000
+      if(arguments.length === 1){
+        document.cookie = name + '=' + JSON.stringify(value) + ';expires=' + exp.toGMTString();
+      }else if(arguments.length === 0){
+        document.cookie = defaultCookie.name + '=' + JSON.stringify(defaultCookie) + ';expires=' + exp.toGMTString();
       }
-      exp.setTime(exp.getTime() + 31536000000); // 365 * 24 * 60 * 60 * 1000
-      document.cookie = name + '=' + n + ';expires=' + exp.toGMTString();
     }
     /**
      * cookie - 读取
      */
-    function getCookie(name = '章节') {
+    function getCookie(name) {
       var str = document.cookie;
-      new RegExp(`${name}=([^;]+)`).test(str);
-      return RegExp.$1;
+      if(new RegExp(`${name}=([^;]+)`).test(str)){
+        return RegExp.$1;
+      }else return;
+    }
+    // 设置n并更新cookie
+    function setN(n){
+      defaultCookie.data.n = n;
+      setCookie();
+    }
+    // 更新书名并更新cookie
+    function setBookName(name){
+      bookName = defaultCookie.data.name = defaultCookie.name = name;
+      setCookie();
+      setCookie({name: 'bookName', value: name })
+    }
+    // 从cookie获取书名，并优先从DB中获取信息
+    function getBookNameByCookie(){
+      bookName = getCookie('bookName')
+    }
+    // 更新 DefaultCookie 并更新cookie
+    function updataDefaultCookie(obj){
+      if(Object.prototype.toString(obj) !== "[object Object]"){ console.error('obj格式不是对象', obj); return; }
+      Object.assign(defaultCookie, obj)
+      setCookie();
     }
     /**
-     * cookie - 读取
+     * 设置书签列表
      */
-    function getBookMark(name) {
-      var arr = document.cookie.split('; '),
-        l = arr.length,
-        html = '',
-        i;
-      for (i = 0; i < l; i++) {
-        if (new RegExp(`(${name}\d*)`).test(arr[i])) {
-          var a = arr[i].split('=');
-          html += '<option title="' + book[a[1]].title + '" name="' + a[0] + '" value="' + a[1] + '" >' + book[a[1]].title.substr(1, 11) + '</option>';
-        }
-      }
+    function getBookMark() {
+      var arr = defaultCookie.marks,html = '';
+      arr.forEach(n => {
+        html += '<option title="' + book[n].title + '" name="' + n + '" value="' + n + '" >' + book[n].title.substr(1, 11) + '</option>';
+      });
 
       bookmark.innerHTML = html;
     }
@@ -172,7 +172,8 @@
         bookName;
       
       if(/\《(.+)\》/.test(str)){
-        setCookie('书名', RegExp.$1)
+        defaultCookie.name = defaultCookie.data.name = RegExp.$1;
+        setCookie()
       }
       reg.lastIndex = 0;
       reg.test(str);
@@ -213,30 +214,62 @@
       writeText(++n);
     }
     save.onclick = function () {
-      var arr = document.cookie.split('; '),i = arr.length;
-      while (i) {
-        if(new RegExp(`${markName}(\\d*)`).test(arr[--i])){
-          markNum =  Number(RegExp.$1);
-          break;
-        }
-      }
-      setCookie(markName + (++markNum), n);
-      getBookMark(markName);
+      if(!defaultCookie.data.marks) defaultCookie.data.marks=[];
+      defaultCookie.data.marks.push(n)
+      getBookMark();
     }
     bookmark.onchange = function(event){
       n = Number(event.target.value)
       writeText(n);
     }
+    // 设置书架信息
+    function setBookshelf(){
+      var html='<h3 style="text-align: center;">我的书架</h3><hr><br>'
+      if(bookList.length){
+        bookList.forEach((book)=>{
+          html +=''
+        })
+      }else html +='<div  style="text-align: center;font-size: 1em;">暂无图书，请添加</div>';
+      html+='<div class="book-li" id="addBook"><div class="book-img noimg">+</div><p></p></div>';
+
+      bookshelf.innerHTML = html;
+      bookshelf.style.visibility = 'visible'; // hidden
+      setTimeout(()=>{
+        addBook = document.getElementById('addBook');
+        addBook.addEventListener('click',function(e){
+          // 模拟input点击事件
+          var evt = new MouseEvent("click", {
+            bubbles: false,
+            cancelable: true,
+            view: window
+          });
+          input.dispatchEvent(evt);
+        })
+      },500)
+    }
     // 没关闭浏览器就可以自动加载
     window.onload = function () {
-        if(getCookie() !== ''){n = getCookie();}
+      
+      getBookNameByCookie(); // 获取默认书名 在db中读取文本信息
+      getCookie(); // 设置默认
+      var n = defaultCookie.n;
 
+
+      // DB数据库缓存
+      var BookOptions ={
+        indexArr:[
+          { indexName: 'title', unique: { unique: false }},
+          { indexName: 'id', unique: { unique: false }}
+        ],
+        name: 'bookshelf',
+        tableName: 'bookName'
+      }
+        
         if (n !== undefined && bookData) {
           writeText(n)
         }
-        getBookMark(markName);
-
-      
+        // getBookMark();
+        setBookshelf();
     }
   </script>
 </body>
