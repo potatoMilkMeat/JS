@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>在线阅读器-武汉程龙</title>
+  <link rel="stylesheet" href="./style.css">
+</head>
+<body class="green">
+  <!-- 页面框架部分 ---begin -->
+  <!-- 书架 -->
+  <div id="bookshelf" class="bookshelf">
+    <h3 class="header" style="text-align: center;">我的书架
+      <div class="header-add" id="addBook">+</div>
+    </h3>
+    <div id="bookshelfContent" class="bookshelf-content">
+      
+    </div>
+  </div>
+
+  <!-- pc版工具 -->
+  <div id="tool" class="tool">
+    <!-- 加载本地txt 编码设置 -->
+    <input type="file" name="" id="input" class="hide">
+    <button id="gotoBookshelf" class="back">返回</button>
+    <span class="mini-hide" title="如果出现乱码，请切换编码格式">编码：</span>
+    <select id="encoding">
+      <option selected value="GBK">中文 & ANSI</option>
+      <option value="ASCII">纯英文</option>
+      <option value="UTF-8">UTF-8</option>
+      <option value="UTF-16">Unicode</option>
+    </select>
+
+    <!-- 章节跳转 -->
+    <button id="pre">前一章</button>
+    <span id="now" class="now"></span>
+    <button id="next">后一章</button>
+    <!-- <button id='save'>保存</button> -->
+
+    <!-- 书签 -->
+    <!-- <select id="bookmark"></select> -->
+  </div>
+
+  <!-- 正文阅读 -->
+  <div id="txt" class="txt"></div>
+
+  <!-- 页面框架部分 ---end -->
+
+  <script src="./config.js">/* html 和 js 解耦做的; el.pre.onclick= fn */</script>
+  <script src="./23.3.4.DB.js">/* IDB封装 */</script>
+  <script src="./book.js">/* Book封装 */</script>
+  <script src="./init.js"></script>
+</body>
+</html>
