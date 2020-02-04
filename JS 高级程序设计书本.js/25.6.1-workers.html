@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>workers - 后台运行</title>
+  <style>
+  .start,.end,.doing{ background: #F2f2f2;padding: 8px;display: inline-block;width: 320px;font-size: 12px;}
+  .doing{ background: rgb(243, 255, 236);padding: 20px 8px;text-align: right;font-size: 24px;}
+  button{margin-right: 20px; }
+  </style>
+</head>
+<body>
+  <div>开始时间：<span class="start" id="startTime">0</span><br><hr>
+    进度：<span class="doing" id="doing">0</span><br><hr>
+    结束时间：<span class="end" id="endTime">0</span>
+  </div>
+  <div>
+    <button onclick="runPush()"> 开始 5百万的arr.push</button>
+    <button onclick="stopPush()"> 结束arr.push，终止</button>
+  </div>
+<script>
+  function creatWorker(){
+    if(window.worker) window.worker = null; // 为了worker 下次运行更快，必须销毁。不要持续使用
+    window.worker = new Worker('./25.6.1-creatArray.js');
+
+    worker.onerror=function(event){
+      console.error("错误：",event.filename,' - ', event.lineno,' - ', event.message)
+    }
+
+    worker.onmessage=function(event){
+    //  var data = event.data;
+    //  console.log('worker ',typeof data,'\n',data);
+    domWrite(event.data);
+    }
+  }
+
+// 生成变量
+var start = document.getElementById('startTime'),
+    doing = document.getElementById('doing'),
+    end = document.getElementById('endTime');
+  function domWrite(data){
+    if(data.start) start.innerText = new Date(data.start);
+    if(data.doing) doing.innerText = data.doing;
+    if(data.end) end.innerText = new Date(data.end);
+  }
+
+  function runPush(){
+    creatWorker();
+    worker.postMessage(5*1000*1000);
+  }
+  
+  function stopPush(){
+    worker.terminate(); // 立即停止工作
+    window.worker = null; // 为了worker 下次运行更快，必须销毁。不要持续使用
+  }
+</script>
+</body>
+</html>
