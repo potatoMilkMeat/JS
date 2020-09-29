@@ -48,41 +48,60 @@ div = button1.parentElement;
 function getName(node){
   return node.nodeName + getSublingName(node);
 }
-getName(div)
+function g(id){ return document.getElementById(id);}
+getName(div);
 
 /** =====26.5-遍历文档树=================== */
-//
+// XPath 解释器
 var Interpreter = (function(){
-  //
-  var getSublingName = getSublingName;
-  //
+  // 获取兄弟元素名称
+  // var getSublingName = getSublingName;
+  // 参数 node: 目标节点  参数 wrap: 容器节点
   return function(node, wrap){
-    //
+    // 路径数组
     var path = [],
+        // 如果不存在容器节点，默认为documnet
         wrap = wrap || document;
-    //
+    // 如果当前节点等于容器节点
+    console.log('程序开始', path, node, wrap);
     if(node === wrap){
-      //
+      // 容器节点为元素
       if(wrap.nodeType === 1){
-        // 
+        // 路径数组中输入容器节点名称
         path.push(wrap.nodeName.toUpperCase());
       }
-      //
+      // 返回最终路径数组结果
+      console.log('***  node === wrap 返回最终路径数组结果', path);
       return path;
     }
-    //
+    // 递归
+    // 如果当前节点的父节点不等于容器节点
     if(node.parentNode !== wrap){
-      //
+      // 对当前节点的父节点执行遍历操作
+      console.log('+++  递归函数');
       path = arguments.callee(node.parentNode, wrap);
     }
-    //
+    // 如果当前节点的父元素节点与容器节点相同
     else{
-      //
+      // 容器节点为元素
       if(wrap.nodeType === 1){
-        //
+        // 路径数组中输入容器节点名称
         path.push(wrap.nodeName.toUpperCase());
       }
-
+      console.log('*** wrap.nodeName', path);
     }
+    // 获取元素的兄弟元素名称统计
+    var sublingsNames = getSublingName(node);
+    // 如果节点为元素
+    if(node.nodeType === 1){
+      // 输入当前节点元素名称及其前面兄弟元素名称统计
+      path.push(node.nodeName.toUpperCase() + sublingsNames);
+    }
+    // 返回最终路径数组结果
+    console.log('*** 返回最终路径数组结果', path);
+    return path;
   }
-})()
+  // 立即执行方法
+})();
+
+var path = Interpreter(g('button1'));
