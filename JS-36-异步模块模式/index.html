@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>异步模块模式</title>
+  <script src="./JS-36-异步模块模式.js"></script>
+</head>
+<body>
+  <btn id="demo">点击</btn>
+  <script>
+    // JS-36-异步模块模式
+    F.module(['lib/event', 'lib/dom'], function(events, dom){
+      events.on('demo', 'click', function(){
+        console.log(events, dom, dom.html('demo'));
+        dom.html('demo', '成功');
+      })
+    })
+  </script>
+
+
+  <!-- 页面元素内容 -37-Widget模式 -->
+  <div id="demo_tag" class="template"></div>
+  <!-- 页面元素内容 -37-Widget模式 模板样式 -->
+<script type="text/template" id="demo_script">
+<div id="tag_cloud">
+  {% for(var i = 0, len = tagCloud.length; i < len; i++){
+    var ctx = tagCloud[i];%}
+    <a href="#" class="tag_item
+    {% if(ctx["is_selected"]){ %}
+      selected
+    {% } %}
+    " title="{%=ctx["title"]%}">{%=ctx["text"]%}</a>
+  {% } %}
+</div>
+</script>
+  <script>
+    // JS-37-Widget模式
+    F.module(['lib/template', 'lib/dom'], function(template, dom){
+      // do something
+      console.log(template, 'lib/template: 成功');
+      // 假设获取数据
+      var data = {
+        tagCloud: [
+          {is_selected: true, title: '这是一本设计模式书', text: '设计模式'},
+          {is_selected: false, title: '这是一本HTML书', text: 'HTML'},
+          {is_selected: null, title: '这是一本css书', text: 'css'},
+          {is_selected: '', title: '这是一本JS书', text: 'JS'}
+        ]
+      };
+      // 创建组件视图逻辑
+      var str = template('demo_script', data);
+      dom.html('demo_tag', str);
+      // 组件其他交互逻辑
+    })
+  </script>
+</body>
+</html>
