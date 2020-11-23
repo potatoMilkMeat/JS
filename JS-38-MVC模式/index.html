@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>JS-38-MVC模式</title>
+  <script src="./JS-38-MVC模式.js"></script>
+<style>
+a{text-decoration: none;color: unset;}
+*{margin: 0;padding: 0;}
+.slideBar{position: relative; width: 60px;height: auto; position: absolute;top: 0;left: 0;bottom: 0;background: #f2f2f2;color: #333;font-size: 12px;overflow: visible;}
+.clidebar-close{position: absolute;bottom: 0;left: 0; background: #fff;border: 1px solid #ddd;display: inline-block;width: 60px;height: 60px;}
+.clidebar-close::after{content: '>';font-size: 30px; line-height: 60px;text-align: center;width: 100%; display: inline-block;}
+.clidebar-close.is-close::after{content: '<';}
+.slidebar-inner{ position: absolute;top: 0;left: 0;bottom: 0;right: 0; width: 60px;}
+.slidebar-inner li{padding: 15px;border-bottom: 1px solid #ddd;height: 60px;position: relative;}
+.icon{text-align: center;position: relative;display: block; height: 60px;}
+.icon img{width: 30px;vertical-align: middle;display: block;}
+.icon span{position: absolute;left: 0;bottom: 0;height: 20px;margin-left: -15px; display: inline-block;width: 60px; text-align: center;line-height: 1.6em;}
+
+.show .box{display: block;}
+.box{display: none;position: absolute;top: 0;left: 60px; height: 90px; width: 240px; box-sizing: border-box; background:#e8e8e8; border: 1px solid #ddd; border-radius: 4px;padding: 5px;}
+.box > div{padding: 10px;}
+.box > div a{display: block;line-height: 1.6em;color: #555;}
+.box > a.image{position: absolute;right: 10px;top: 12px;width: 90px;height: 60px;overflow: hidden;text-align: right;}
+.box > a.image img{height: 100%;}
+</style>
+</head>
+<body>
+  
+</body>
+</html>
