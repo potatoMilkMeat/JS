@@ -1,5 +1,11 @@
 /** ===== $ 简化引用 ========= */
 var $ = function(){};
+$.isNumber = function(value){
+  return typeof value === 'number' && isFinite(value);
+};
+$.isArray = function(value){
+  return Object.prototype.toString.call(value) === '[object Array]';
+};
 $.create = function(tagName, obj){
   var dom = document.createElement(tagName);
   for(var key in obj){
