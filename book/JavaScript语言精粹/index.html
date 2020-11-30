@@ -3,9 +3,93 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Document</title>
+  <title>JavaScript语言精粹</title>
+  <style>
+    *{padding: 0;margin: 0;}
+    html{font-size: 16px;color: #222;line-height: 1.6;}
+    h3{font-size: 20px;color: #000;line-height: 2.4;padding-left: 2em;}
+    #cont{position:absolute; left: 0;width: 100%;top: 53px;bottom: 40px;overflow-y: scroll;}
+    p{padding: 0 10px;padding-top: 20px;font-weight: bold;font-family: "微软雅黑";}
+    code{padding:10px;display: block;color: #000; background: #eee;white-space: pre;font-family: Consolas, 'Courier New', monospace;}
+  </style>
+  <script src="../js_lib/writeDom.js"></script>
+  <script src="./main.js"></script>
 </head>
 <body>
-  <script src="./main.js"></script>
+  <h3>JavaScript语言精粹</h3>
+  <hr>
+  <div id="cont"></div>
+  <script>
+    window.onload = function(){
+      // 显示的数据
+      var data = [{
+        p: '【程龙】获取属性描述 设置枚举属性为不可访问-- 减少对 array object的影响',
+        code: 'var get_obj_prop = function(obj, prop){}\nvar set_obj_enumerable_false = function(obj, prop){\nObject.defineProperty(obj, prop, {enumerable: false});\n}'
+      },{
+        p: 'P4 给函数类  定义链式新方法',
+        code: 'Function.prototype.method = function (name, func) {}'
+      },{
+        p: 'P33 符合条件才增加方法-可以强制替换  ===替换上面的====',
+        code: 'Function.prototype.method = function(name, func, isOverWrite){}'
+      },{
+        p: 'P22 原型继承给 Object.create',
+        code: 'Object.create = function(o){}'
+      },{
+        p: 'P32 数值取整 integer',
+        code: "Number.method('integer', function(){})"
+      },{
+        p: 'P34 汉诺塔 游戏',
+        code: "var hanoi = function(disc, src, aux, dst){}"
+      },{
+        p: 'P35 节点遍历执行函数',
+        code: "var walk_the_DOM = function(node, func){}"
+      },{
+        p: 'P39 闭包使用 添加点击事件',
+        code: "var add_the_handlers = function(nodes){}"
+      },{
+        p: 'P40 html字符实体替换为对应的字符 deentityfy',
+        code: "String.method('deentityify', function(){})"
+      },{
+        p: 'P41 生产序列号，安全对象 serial_maker',
+        code: "var serial_maker = function(prefix, seq){}"
+      },{
+        p: 'P43 柯里化 curry',
+        code: "Function.method('curry', function(){})"
+      },{
+        p: 'P43-45 【记忆】 - fibonacci数列',
+        code: "var memoizer = function(memo, formula){}\nvar fibonacci = memoizer([0, 1], function(recur, n){}"
+      },{
+        p: 'P47 【伪类】  inherits 继承父类',
+        code: "Function.method('inherits', function(Parent){})"
+      },{
+        p: 'P53 【函数化】  superior 处理父类方法的方法',
+        code: "Object.method('superior', function(name){})"
+      },{
+        p: 'P55 【部件】 给对象添加 on，fire ,私有监听注册表',
+        code: "var eventuality = function(that){}"
+      },{
+        p: 'P62 生成数组：指定 长度 初始化值 dim',
+        code: "Array.dim = function(dimension, initial){}"
+      },{
+        p: 'P62 二维数组：指定 长,宽 初始化值 matrix',
+        code: "Array.matrix = function(m, n, initial){}"
+      },{
+        p: 'P63 二维数组：指定 长,宽 初始化值 identity',
+        code: "Array.identity = function(n){}"
+      },{
+        p: 'P69 【正则表达式】字符串是数字',
+        code: "String.method('is_number', function(){})"
+      },{
+        p: 'P79 【数组排序- 纯数字 - 混排】 Array.sort()',
+        code: "arr_m.sort(function(a,b){})"
+      },{
+        p: 'P80 【数组排序-对象】 Array.by',
+        code: "Array.by = function(name, minor){}"
+      }];
+
+      // 执行
+      writeDom(data);
+    }
+  </script>
 </body>
 </html>
