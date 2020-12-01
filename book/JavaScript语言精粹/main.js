@@ -503,7 +503,7 @@ var arr_s=[{first: 'Joe', last: 'Bsdfsd'},
   {first: 'Shemp', last: 'Herita'},
   {first: 'Larry', last: 'Werita'},
   {first: 'Curry', last: 'Serita'}
-]
+];
 Array.by = function(name, minor){
   return function(o, p){
     var a,b;
@@ -525,3 +525,18 @@ arr_s.sort(Array.by('first', Array.by('last')));
 // {first: "Larry", last: "Werita"}
 // {first: "Moe", last: "Howarde"}
 // {first: "Shemp", last: "Herita"}
+
+// P84 转化为 指数形式字符串 Number.toExponential
+Math.PI.toExponential(7);
+
+// P84 转化为 十进制形式字符串 Number.toFixed
+Math.PI.toFixed(7);
+
+// P85 转化为 十进制 形式字符串(依靠精度) Number.toPrecision
+Math.PI.toPrecision(100);
+
+// P85 转化为 进制 形式字符串(依靠进制) Number.toPrecision
+(8).toString(2);
+
+// P91 完全匹配className String.search
+'active ok ok-active    ok-test'.search(/(?:^|\s+)ok(?:\s+|$)/);
