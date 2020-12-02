@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>JavaScript高性能</title>
+  <style>
+    *{padding: 0;margin: 0;}
+    html{font-size: 16px;color: #222;line-height: 1.6;}
+    h3{font-size: 20px;color: #000;line-height: 2.4;padding-left: 2em;}
+    #cont{position:absolute; left: 0;width: 100%;top: 53px;bottom: 40px;overflow-y: scroll;}
+    p{padding: 0 10px;padding-top: 20px;font-weight: bold;font-family: "微软雅黑";}
+    code{padding:10px;display: block;color: #000; background: #eee;white-space: pre;font-family: Consolas, 'Courier New', monospace;}
+  </style>
+  <script src="../js_lib/writeDom.js"></script>
+  <script src="./main.js"></script>
+</head>
+<body>
+  <h3>JavaScript高性能</h3>
+  <hr>
+  <div id="cont"></div>
+  <script>
+    window.onload = function(){
+      // 显示的数据
+      var data = [{
+        p: 'xxxx',
+        code: ''
+      },{
+        p: 'xxxx',
+        code: ''
+      },{
+        p: 'xxxx',
+        code: ''
+      },{
+        p: 'xxxx',
+        code: ''
+      },{
+        p: 'xxxx',
+        code: ''
+      }];
+
+      // 执行
+      writeDom(data);
+    }
+  </script>
+</body>
+</html>

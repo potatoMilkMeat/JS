@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>JavaScript设计模式</title>
+  <style>
+    *{padding: 0;margin: 0;}
+    html{font-size: 16px;color: #222;line-height: 1.6;}
+    h3{font-size: 20px;color: #000;line-height: 2.4;padding-left: 2em;}
+    #cont{position:absolute; left: 0;width: 100%;top: 53px;bottom: 40px;overflow-y: scroll;}
+    p{padding: 0 10px;padding-top: 20px;font-weight: bold;font-family: "微软雅黑";}
+    code{padding:10px;display: block;color: #000; background: #eee;white-space: pre;font-family: Consolas, 'Courier New', monospace;}
+  </style>
+  <script src="../js_lib/writeDom.js"></script>
+  <script src="./main.js"></script>
+</head>
+<body>
+  <h3>JavaScript设计模式</h3>
+  <hr>
+  <div id="cont"></div>
+  <script>
+    window.onload = function(){
+      // 显示的数据
+      var data = [{
+        p: 'JS-1.11-换一种方式使用方法',
+        code: ''
+      },{
+        p: 'JS-2.2.2-属性和方法封装',
+        code: ''
+      },{
+        p: 'js-2.2.3-闭包实现',
+        code: ''
+      },{
+        p: 'js-2.2.4-创建对象的安全模式',
+        code: ''
+      },{
+        p: 'js-2.3.1-类式继承',
+        code: ''
+      },{
+        p: 'js-2.3.2-构造函数继承',
+        code: ''
+      },{
+        p: 'js-2.3.3-组合继承 -importent- ',
+        code: ''
+      },{
+        p: 'js-2.3.4-原型式继承',
+        code: ''
+      },{
+        p: 'js-2.3.5-寄生式继承',
+        code: ''
+      },{
+        p: 'js-2.3.6-寄生组合式继承',
+        code: ''
+      },{
+        p: 'js-2.4-多继承',
+        code: ''
+      },{
+        p: 'js-2.5-多态',
+        code: ''
+      },{
+        p: 'js-3.1-简单工厂模式',
+        code: ''
+      },{
+        p: 'js-3.2-简单工厂模式',
+        code: ''
+      },{
+        p: 'js-3.3-一个对象有时也能代替很多类',
+        code: ''
+      },{
+        p: 'js-4.4-安全的工厂方法',
+        code: ''
+      },{
+        p: 'js-5-抽象工厂模式',
+        code: ''
+      },{
+        p: 'js-6-建造者模式',
+        code: ''
+      },{
+        p: 'js-7-原型模式',
+        code: ''
+      },{
+        p: 'js-8-单例模式',
+        code: ''
+      },{
+        p: 'js-9-外观模式',
+        code: ''
+      },{
+        p: 'js-10-适配器模式',
+        code: ''
+      },{
+        p: 'js-11-跨域-代理模式',
+        code: ''
+      },{
+        p: 'js-12-装饰着模式',
+        code: ''
+      },{
+        p: 'js-13-桥接模式-对象和业务解耦',
+        code: ''
+      },{
+        p: 'JS-14.3-组合模式',
+        code: ''
+      },{
+        p: 'JS-15-1享元模式',
+        code: ''
+      },{
+        p: 'JS-15-2享元模式',
+        code: ''
+      },{
+        p: 'JS-16-模板模式',
+        code: ''
+      },{
+        p: 'JS-17观察者模式',
+        code: ''
+      },{
+        p: 'JS-17.7对象解耦',
+        code: ''
+      },{
+        p: 'JS-18-状态模式-超级玛丽',
+        code: ''
+      },{
+        p: 'JS-19-策略模式',
+        code: ''
+      },{
+        p: 'JS-20-职责链模式',
+        code: ''
+      },{
+        p: 'JS-21-命令模式-1视图',
+        code: ''
+      },{
+        p: 'JS-21.7-命令模式-绘图命令',
+        code: ''
+      },{
+        p: 'JS-22-访问者模式',
+        code: ''
+      },{
+        p: 'JS-23-中介者模式',
+        code: ''
+      },{
+        p: 'JS-24-备忘录模式',
+        code: ''
+      },{
+        p: 'JS-25-9 分支循环嵌套问题-图片特效',
+        code: ''
+      },{
+        p: 'JS-25-迭代器模式',
+        code: ''
+      },{
+        p: 'JS-26-解析器模式',
+        code: ''
+      },{
+        p: 'JS-27-链模式',
+        code: ''
+      },{
+        p: 'JS-28-委托模式',
+        code: ''
+      },{
+        p: 'JS-29-数据访问对象模式',
+        code: ''
+      },{
+        p: 'js-30-节流模式',
+        code: ''
+      },{
+        p: 'JS-31-简单模板模式',
+        code: ''
+      },{
+        p: 'JS-32- 惰性模式',
+        code: ''
+      },{
+        p: 'JS-33-参与者模式',
+        code: ''
+      },{
+        p: 'JS-34-等待着模式',
+        code: ''
+      },{
+        p: 'JS-35-同步模块模式',
+        code: ''
+      },{
+        p: 'JS-36-异步模块模式',
+        code: ''
+      },{
+        p: 'JS-38-MVC模式',
+        code: ''
+      },{
+        p: 'JS-39MVP模式',
+        code: ''
+      }];
+
+      // 执行
+      writeDom(data);
+    }
+  </script>
+</body>
+</html>
