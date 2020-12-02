@@ -9,3 +9,4 @@ var writeDom = function(arr){
   }
   cont.innerHTML = html;
 };
+// console.log('writeDom onReady!');

@@ -12,36 +12,69 @@
     p{padding: 0 10px;padding-top: 20px;font-weight: bold;font-family: "微软雅黑";}
     code{padding:10px;display: block;color: #000; background: #eee;white-space: pre;font-family: Consolas, 'Courier New', monospace;}
   </style>
-  <script src="../js_lib/writeDom.js"></script>
-  <script src="./main.js"></script>
+  
 </head>
 <body>
   <h3>JavaScript高性能</h3>
   <hr>
   <div id="cont"></div>
-  <script>
-    window.onload = function(){
-      // 显示的数据
-      var data = [{
-        p: 'xxxx',
-        code: ''
-      },{
-        p: 'xxxx',
-        code: ''
-      },{
-        p: 'xxxx',
-        code: ''
-      },{
-        p: 'xxxx',
-        code: ''
-      },{
-        p: 'xxxx',
-        code: ''
-      }];
-
-      // 执行
+  <script src="../js_lib/writeDom.js">/* 加载后立即运行 */</script>
+  <script src="./main.js" defer>/* 外链defer 最后执行 */</script>
+  <script defer>
+  var creatDomFromData = function(){
+    // 显示的数据
+    var data = [{
+      p: '1.1 - 动态脚本元素 推荐内嵌模式',
+      code: 'var loadScript = function(url, func){}'
+    },{
+      p: '1.2 - XMLHttpRequest 脚本注入',
+      code: 'var xhr_loadScript = function(url, func){}'
+    },{
+      p: '2.1.4 try-catch 调用优化',
+      code: 'var try_catch = function(func, context, args, handleError){}'
+    },{
+      p: '2.2.1 in操作符 是否包含特定属性',
+      code: 'console.log("toString" in {});'
+    },{
+      p: '【程龙】for循环封装',
+      code: 'var for_cl = function(arr, func,  isSort, context, if_break_Fun){}'
+    },{
+      p: 'xxxx',
+      code: ''
+    },{
+      p: 'xxxx',
+      code: ''
+    },{
+      p: 'xxxx',
+      code: ''
+    },{
+      p: 'xxxx',
+      code: ''
+    },{
+      p: 'xxxx',
+      code: ''
+    },{
+      p: 'xxxx',
+      code: ''
+    },{
+      p: 'xxxx',
+      code: ''
+    },{
+      p: 'xxxx',
+      code: ''
+    },{
+      p: 'xxxx',
+      code: ''
+    },{
+      p: 'xxxx',
+      code: ''
+    }];
+    var func =function(){
       writeDom(data);
-    }
+    };
+    func(); // 执行
+    return func;
+  }();
   </script>
 </body>
 </html>
