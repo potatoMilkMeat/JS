@@ -134,15 +134,17 @@ var try_catch = function(func, context, args, handleError){
 // 2.2.1 in操作符 是否包含特定属性
 console.log('toString' in {});
 
-// P35 第二章 DOM访问和修改 ==============
+// P35 第三章 DOM编程 ==============
 /**
- * 2.1 浏览器中的DOM
+ * 3.1 浏览器中的DOM
  * P36 访问和修改：减少访问DOM的次数，把运算经量留在ECMAScript这一端处理
  * P37 innerHTML 对比DOM方法：推荐innerHTML，速度差不多，代码可读性更强。
  *     采用 + 合并字符串 比 [].join('') 要快，因新浏览器 对 + 优化。
  * P41 element.cloneNode 比 document.createElement 快 3-10%
  * P42 HTML集合：转化为 数组操作会快些，避免DOM改变（结构，index）。
  *     for循环，申明len变量和item 会加速程序
+ * P46 遍历Dom children 比 node 的childNodes ，firstChild 等快
+ * P48 选择器API document.querySelectorAll('#id a', '#id2 a') 快
  */
 /**
  * for循环封装
@@ -159,31 +161,48 @@ var for_cl = function(arr, func,  isSort, context, if_break_Fun){
   var len = arr.length;
   var index;
   var item;
+  var doneArr = [false, false]; // 执行的函数 状态
+  var state; // 函数为 找到匹配的值
+  var done; // 函数循环
+  var doneFunc; // 实际执行函数
   context = context || null;
+
   // 找到匹配的值
-  var state = function(item, index) {
-    if(if_break_Fun && if_break_Fun(item, index)){
-      return {index: index, item: item};
-    }
-  };
+  if(if_break_Fun && typeof if_break_Fun === 'function'){
+    state = function(item, index) {
+      if(if_break_Fun(item, index)){
+        return true;
+      }else {return false;}
+    };
+    doneArr[0] = true;
+  }
+  
   // 执行函数
-  var done = function(item, index){
-    func && func.call(context, item, index);
-  };
+  if(func && typeof func === 'function'){
+    done = function(item, index){
+      func.call(context, item, index);
+    };
+   doneArr[1] = true;
+  }
+  // 没有执行函数报错
+  if(!doneArr[0] && !doneArr[1]){
+    throw new Error(JSON.stringify({type: '参数错误', message: 'func 和 if_break_Fun 不是函数'}));
+  }
+  
   // 正序
   if(!isSort){
   for(index = 0;index<len;index++){
-      state(arr[index], index);
-      item = arr[index];
-      done(item, index);
-    }
+    item = arr[index];
+    if(doneArr[0] && state(item, index)){return {index: index, item: item}};
+    doneArr[1] && done(item, index);
+  }
   index--;
   // 逆序
   }else{
-    for(index = len-1; index>=0; index--){
-      state(arr[index], index);
+    for(index = len;index--;){
       item = arr[index];
-      done(item, index);
+      if(doneArr[0] && state(item, index)){return {index: index, item: item}};
+      doneArr[1] && done(item, index);
     }
     index++;
   }
@@ -198,3 +217,71 @@ var for_cl = function(arr, func,  isSort, context, if_break_Fun){
 // for_cl([0, 11, 22, 33],function(item, i){console.log(i, item, this.id);},false, {id:'a'});
 // // 顺序 递增，执行打断, 返回 {index: 2, item: 22}
 // for_cl([0, 11, 22, 33], null, false, null, function(item, i){return item ===22});
+
+/**
+ * 3.2 重绘和 重排
+ * P52 el.style.cssText = '';
+ * P54 推荐文档片段来 批量修改Dom
+ * P56 将导致重绘的数值缓存成变量 例如 offsetTop
+ *     动画- 绝对定位脱离，动画结束后恢复
+ * P57 事件委托给父级，判断是不是子集触发的，做成类库使用
+ */
+
+ // P61 第四章 算法和流程控制 ==============
+/**
+ * 3.1 循环
+ * P63 for-in 最慢 速度为其他循环类的 1/7
+ * P63 减少迭代的工作量：声明变量 var len；倒叙(快50%-60%)
+ * P66 减少迭代次数
+ */
+
+/**
+ * P66 减少迭代次数
+ * // 循环体展开技术 ‘达夫设备 Duff's Device’
+ * // 根据 Jeff Greenberg 改编
+ * @param {*} arr 操作数组对象
+ * @param {*} func 处理程序
+ * @param {*} num 循环体展开的个数，默认为8次
+ */
+var while_cl = function(arr, func, num){
+  // 克隆的循环体展开个数，用于动态创建 done 函数体
+  var numClone = num = num || 8;
+  // 克隆的数组长度，用于处理程序使用
+  var lenClone = len = arr.length;
+  var i = len % num; // 现在 的 i为 余数
+  // 执行 余数循环
+  while (i--) {
+    func(arr[--lenClone]);
+  }
+
+  // 动态创建 done 函数体，eval 返回了一个新的匿名函数
+  var doneFuncString = '(function a(){return function(){';
+  while (numClone--) {
+    doneFuncString += 'func(arr[--lenClone]);';
+  }
+  doneFuncString += '}})();';
+  var done = eval(doneFuncString);
+
+  // 现在 的 i为 倍数（循环体展开技术的核心）
+  i = Math.floor(len/num);
+  while (i--) {
+    done();
+  }
+};
+// 使用示例
+// while_cl(['000',111,222,3333,4444],function(item){console.log(item);}, 3);
+
+/**
+ * 3.2 条件语句
+ * P68 条减少用if-else, 否则用switch。实际上switch 有语言的分支优化，并且switch采用===（快）
+ * P70 if-else 采用二分法会加快运行
+ * P72 查找表，数组和对象建立索引表，会加快速度。（完全抛弃条件判断）
+ */
+
+ /**
+ * 3.3 递归
+ * P75 递归模式分为 调用自身；双函数相互调用（一般会卡死）
+ * P76 迭代 来替换递归，避免调用栈限制。
+ * P77 缓存方式减少重复计算，加快速度
+ */
+// P76 迭代 来替换递归，避免调用栈限制。
