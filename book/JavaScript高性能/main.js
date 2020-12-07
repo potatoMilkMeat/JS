@@ -285,3 +285,45 @@ var while_cl = function(arr, func, num){
  * P77 缓存方式减少重复计算，加快速度
  */
 // P76 迭代 来替换递归，避免调用栈限制。
+/**
+ * 比较大小，小排前面。数组不限制长度
+ * 展开时，left 和 right数组内部排列顺序，此时长度为1，或者2
+ * 展开后，left 和 right数组比较大小，一次循环后结束
+ * @param {*} left 左数组
+ * @param {*} right 右数组
+ */
+var merge = function(left, right) {
+  var result = []; // 暂存数组，存小值
+  // 遍历，直到 左或者右的数组为空
+  while(left.length > 0 && right.length > 0){
+    if(left[0] < right[0]){
+      result.push(left.shift());
+    }else{
+      result.push(right.shift());
+    }
+  }
+  // 返回的结果，需要拼接剩下的数组。其中一个为空
+  // 结果就是小的在前，大的在后
+  return result.concat(left).concat(right);
+};
+
+/**
+ * 排序数组，递归处理 分成左右两个数组，依次展开，直到长度为1时返回
+ * @param {*} items 被排序的数组
+ */
+var mergeSort = function(items){
+  // 递归的终止条件
+  if(items.length ===1){
+    return items;
+  }
+  // 二分法 来展开
+  var middle = Math.floor(items.length / 2),
+      left = items.slice(0, middle),
+      right = items.slice(middle);
+  // 返回结果 - 递归的核心
+  // 展开时，二分到 单独的一个为止
+  // 展开后，只比较 做开始的左右数组
+  return merge(mergeSort(left), mergeSort(right));
+};
+
+console.log(mergeSort([123,56,25,4,0]));

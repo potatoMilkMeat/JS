@@ -22,7 +22,7 @@
         "name": "使用本机 Chrome 调试",
         "type": "chrome",
         "request": "launch",
-        "file": "${workspaceRoot}/book/JavaScript高性能/index.html",
+        "file": "${workspaceRoot}/index.html",
         "sourceMaps": false
     }
   ]
