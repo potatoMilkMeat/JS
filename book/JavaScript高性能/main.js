@@ -325,5 +325,118 @@ var mergeSort = function(items){
   // 展开后，只比较 做开始的左右数组
   return merge(mergeSort(left), mergeSort(right));
 };
+ 
+// console.log(mergeSort([123,56,25,4,0]));
 
-console.log(mergeSort([123,56,25,4,0]));
+/**
+ * 排序数组，迭代处理
+ * @param {*} items 被排序的数组
+ */
+var mergeSort = function(items){
+  if(items.length === 1){
+    return items;
+  }
+
+  // work 数组来缓存
+  var work = [], len = items.length;
+  // 遍历items=[item, ...] 创建work=[ [item], ... ]
+  for_cl(items, function(item, i){
+    var _that = this;
+    _that.push([item]);
+  }, true, work);
+
+  // 如果数组长度为奇数
+  if(len%2){
+    work.push([]);
+  }
+  
+  // 遍历 items 长度，处理为2个 lim>1, 
+  for(var lim = len; lim > 1; lim=lim/2){
+    for(var j=0,k=0;k<lim;j++,k+=2){
+      work[j] = merge(work[k], work[k+1]);
+    }
+    // 如果数组长度为奇数
+    if(lim%2){
+      work[j] = [];
+      lim +=1;
+    }
+  }
+  // 返回结果
+  return work[0];
+};
+
+// console.log(mergeSort([123,56,25,4,0]));
+
+// P90 正则表达式- 重复与回溯
+var str = '<p>Para 1.</p>'+
+          '<img src="1.jpg">'+
+          '<p>Para 2.</p>'+
+          '<div>Div 1.</div>';
+// 贪婪量词 * 号
+/<p>.*<\/p>/i.exec(str); // "<p>Para 1.</p><img src="1.jpg"><p>Para 2.</p>"
+// 惰性量词 *? 号
+/<p>.*?<\/p>/i.exec(str); // "<p>Para 1.</p>"
+
+
+// className 匹配
+var regClassName = function(calssName){
+  var calssN = calssName || 'a active ask';
+  var reg=/\S+/g;
+  while ((result = reg.exec(calssN)) != null)  {
+    console.log(result, reg.lastIndex);
+  }
+};
+// regClassName();
+
+var regDone = function(reg, str){
+  console.log(reg.exec(str));
+}
+// 回溯失控 遇到没有结束标签  </html>
+// /<html>[\s\S]*?<head>[\s\S]*?<title>[\s\S]*?<\/title>[\s\S]*?<\/head>[\s\S]*?<body>[\s\S]*?<\/body>[\s\S]*?<\/html>/
+// 正向否定预查  (?!<head>)
+// /<html>(?:(?!<head>)[\s\S])*<head>(?:(?!<title>)[\s\S])*<title>(?:(?!<\/title>)[\s\S])*<\/title>(?:(?!<\/head>)[\s\S])*<\/head>(?:(?!<body>)[\s\S])*<body>(?:(?!<\/body>)[\s\S])*<\/body>(?:(?!<\/html>)[\s\S])*<\/html>/
+
+// /<(?:[^>"']|"[^"]*"|'[^']*')*>/
+
+// regDone(/(A+A+)+B/, 'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA'); // 确实会卡死状态好几分钟
+// regDone(/AA+B/, 'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA'); // 成功
+
+// P96 提高正则表达式 推荐使用方式
+// 方法一、关注让匹配更快失败
+// 方法二、开始以简单，准确的字元开始。eg:  ^ $ a [2-5] \d \b
+//        避免 选择 a|b, 分组 [abc], 而火狐浏览器不要开头用量词 A{2,}  可以替换为 AA+
+// 方法三、使用量词模式，使它们后面的字元互斥。eg [^"\s\n]*\S+
+// 方法四、减少分支数量，缩小分支范围。字符集比分支更快。
+//  cat|bat   替换为 [cb]at
+//  red|read  替换为 rea?d
+//  red|raw   替换为 r(?:ed|aw)
+//  (.|\r|\n)   替换为 [\s\S]
+// 方法五、使用非捕获数组 (?:...)  替换字符串中使用$&
+// 方法六、值捕获感兴趣的文本一减少后处理。eg: /"([^"]*)"/
+// 方法七、贪婪和惰性需要合理使用
+// 方法八、避免重复声明正则表达式，应该赋值给变量后使用
+// 方法九、将复杂的正则表达式查分给简单的片段。
+
+// P99 不使用正则表达式的时候
+// 字符串 的查找固定位置(开头或者结尾的+-n, indexOf lastIndexOf 查找位置)
+var str="sdf;";
+str.charAt(str.length -1) === ';'
+
+// P99 使用正则表达式处理空白- 分两步和贪婪模式 \S 是贪婪模式下，从最后向前匹配，到非空就匹配
+var trim = function(str){
+  return str.replace(/^\s+/, '').replace(/\s+$/, '');
+}
+var trim1 = function(str){
+  return str.replace(/^\s*([\s\S]*\S)?\s*$/, '$1');
+}
+// P103 混合解决方案
+var trim2 = function(str){
+  // 处理开头
+  str = str.replace(/^\s+/, '');
+  var end = str.length -1,
+      ws = /\s/;
+  // 处理结尾- 非正则
+  while(ws.test(str.charAt(end--))){}
+
+  return str.slice(0, end+1);
+}
