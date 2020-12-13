@@ -15,8 +15,8 @@ console.log('main.js 开始运行')
 /**
  * 1.1 - 动态脚本元素 推荐内嵌模式
  * P11
- * @param {*} url js路径
- * @param {*} func 回调函数
+ * @param {String} url js路径
+ * @param {Function} func 回调函数
  */
   var loadScript = function(url, func){
     // 创建script标签 设定类型
@@ -57,8 +57,8 @@ console.log('main.js 开始运行')
  * P9
  * 不能跨域 会立即执行 
  * 还可以添加新的执行语句
- * @param {*} url js路径
- * @param {*} func 回调函数
+ * @param {String} url js路径
+ * @param {Function} func 回调函数
  */
 var xhr_loadScript = function(url, func){
   var xhr = new XMLHttpRequest();
@@ -103,7 +103,13 @@ var xhr_loadScript = function(url, func){
  * P26 闭包需要更多的内容开销
  */
 
-// 2.1.4 try-catch 调用优化
+/**
+ * 2.1.4 try-catch 调用优化
+ * @param {Function} func 
+ * @param {Object} context 
+ * @param {Array} args 
+ * @param {Function} handleError 
+ */
 var try_catch = function(func, context, args, handleError){
   if(!func){console.log('****try_catch函数 参数func：'+ func); return;}
   // 设置默认值
@@ -147,67 +153,67 @@ console.log('toString' in {});
  * P48 选择器API document.querySelectorAll('#id a', '#id2 a') 快
  */
 /**
- * for循环封装
- * @param {*} arr 数组对象
- * @param {*} func(item,index) 遍历函数 返回最后一次执行 {index: index, item: item}
- * @param {*} isSort 是否倒叙 默认false;
- * @param {*} context 遍历函数的作用域
- * @param {*} if_break_Fun 打断函数, 返回匹配的{index: index, item: item}，可用于查找item值
+ * for循环封装-- for循环已经被js引擎 优化过 - 所谓的优化无效， 随便用
+ * @param {Array} arr 数组对象
+ * @param {Function} func(item,index) 遍历函数 返回最后一次执行 {index: index, item: item}
+ * @param {Boolean} isSort 是否倒叙 默认false;
+ * @param {Object} context 遍历函数的作用域
+ * @param {Function} if_break_Fun 打断函数, 返回匹配的{index: index, item: item}，可用于查找item值
  */
-var for_cl = function(arr, func,  isSort, context, if_break_Fun){
-  if(Object.prototype.toString.call(arr) !== '[object Array]'){
-    return false;
-  }
-  var len = arr.length;
-  var index;
-  var item;
-  var doneArr = [false, false]; // 执行的函数 状态
-  var state; // 函数为 找到匹配的值
-  var done; // 函数循环
-  var doneFunc; // 实际执行函数
-  context = context || null;
+// var for_cl = function(arr, func,  isSort, context, if_break_Fun){
+//   if(Object.prototype.toString.call(arr) !== '[object Array]'){
+//     return false;
+//   }
+//   var len = arr.length;
+//   var index;
+//   var item;
+//   var doneArr = [false, false]; // 执行的函数 状态
+//   var state; // 函数为 找到匹配的值
+//   var done; // 函数循环
+//   var doneFunc; // 实际执行函数
+//   context = context || null;
 
-  // 找到匹配的值
-  if(if_break_Fun && typeof if_break_Fun === 'function'){
-    state = function(item, index) {
-      if(if_break_Fun(item, index)){
-        return true;
-      }else {return false;}
-    };
-    doneArr[0] = true;
-  }
+//   // 找到匹配的值
+//   if(if_break_Fun && typeof if_break_Fun === 'function'){
+//     state = function(item, index) {
+//       if(if_break_Fun(item, index)){
+//         return true;
+//       }else {return false;}
+//     };
+//     doneArr[0] = true;
+//   }
   
-  // 执行函数
-  if(func && typeof func === 'function'){
-    done = function(item, index){
-      func.call(context, item, index);
-    };
-   doneArr[1] = true;
-  }
-  // 没有执行函数报错
-  if(!doneArr[0] && !doneArr[1]){
-    throw new Error(JSON.stringify({type: '参数错误', message: 'func 和 if_break_Fun 不是函数'}));
-  }
+//   // 执行函数
+//   if(func && typeof func === 'function'){
+//     done = function(item, index){
+//       func.call(context, item, index);
+//     };
+//    doneArr[1] = true;
+//   }
+//   // 没有执行函数报错
+//   if(!doneArr[0] && !doneArr[1]){
+//     throw new Error(JSON.stringify({type: '参数错误', message: 'func 和 if_break_Fun 不是函数'}));
+//   }
   
-  // 正序
-  if(!isSort){
-  for(index = 0;index<len;index++){
-    item = arr[index];
-    if(doneArr[0] && state(item, index)){return {index: index, item: item}};
-    doneArr[1] && done(item, index);
-  }
-  index--;
-  // 逆序
-  }else{
-    for(index = len;index--;){
-      item = arr[index];
-      if(doneArr[0] && state(item, index)){return {index: index, item: item}};
-      doneArr[1] && done(item, index);
-    }
-    index++;
-  }
-  return {index: index, item: item};
-};
+//   // 正序
+//   if(!isSort){
+//   for(index = 0;index<len;index++){
+//     item = arr[index];
+//     if(doneArr[0] && state(item, index)){return {index: index, item: item}};
+//     doneArr[1] && done(item, index);
+//   }
+//   index--;
+//   // 逆序
+//   }else{
+//     for(index = len;index--;){
+//       item = arr[index];
+//       if(doneArr[0] && state(item, index)){return {index: index, item: item}};
+//       doneArr[1] && done(item, index);
+//     }
+//     index++;
+//   }
+//   return {index: index, item: item};
+// };
 // 使用示例
 // 顺序 递增
 // for_cl([0, 11, 22, 33],function(item, i){console.log(i, item);});
@@ -227,49 +233,49 @@ var for_cl = function(arr, func,  isSort, context, if_break_Fun){
  * P57 事件委托给父级，判断是不是子集触发的，做成类库使用
  */
 
- // P61 第四章 算法和流程控制 ==============
+// P61 第四章 算法和流程控制 ==============
 /**
  * 3.1 循环
  * P63 for-in 最慢 速度为其他循环类的 1/7
  * P63 减少迭代的工作量：声明变量 var len；倒叙(快50%-60%)
  * P66 减少迭代次数
  */
-
 /**
- * P66 减少迭代次数
+ * P66 减少迭代次数 -- while 循环 已经被js引擎处理过， 所谓的优化无效，不用管
  * // 循环体展开技术 ‘达夫设备 Duff's Device’
  * // 根据 Jeff Greenberg 改编
- * @param {*} arr 操作数组对象
- * @param {*} func 处理程序
- * @param {*} num 循环体展开的个数，默认为8次
+ * @param {Array} arr 操作数组对象
+ * @param {Function} func 处理程序
+ * @param {Number} num 循环体展开的个数，默认为8次
  */
-var while_cl = function(arr, func, num){
-  // 克隆的循环体展开个数，用于动态创建 done 函数体
-  var numClone = num = num || 8;
-  // 克隆的数组长度，用于处理程序使用
-  var lenClone = len = arr.length;
-  var i = len % num; // 现在 的 i为 余数
-  // 执行 余数循环
-  while (i--) {
-    func(arr[--lenClone]);
-  }
+// var while_cl = function(arr, func, num){
+//   // 克隆的循环体展开个数，用于动态创建 done 函数体
+//   var numClone = num = num || 8;
+//   // 克隆的数组长度，用于处理程序使用
+//   var lenClone = len = arr.length;
+//   var i = len % num; // 现在 的 i为 余数
+//   // 执行 余数循环
+//   while (i--) {
+//     func(arr[--lenClone]);
+//   }
 
-  // 动态创建 done 函数体，eval 返回了一个新的匿名函数
-  var doneFuncString = '(function a(){return function(){';
-  while (numClone--) {
-    doneFuncString += 'func(arr[--lenClone]);';
-  }
-  doneFuncString += '}})();';
-  var done = eval(doneFuncString);
+//   // 动态创建 done 函数体，eval 返回了一个新的匿名函数
+//   var doneFuncString = '(function a(){return function(){';
+//   while (numClone--) {
+//     doneFuncString += 'func(arr[--lenClone]);';
+//   }
+//   doneFuncString += '}})();';
+//   var done = eval(doneFuncString);
 
-  // 现在 的 i为 倍数（循环体展开技术的核心）
-  i = Math.floor(len/num);
-  while (i--) {
-    done();
-  }
-};
+//   // 现在 的 i为 倍数（循环体展开技术的核心）
+//   i = Math.floor(len/num);
+//   while (i--) {
+//     done();
+//   }
+// };
+
 // 使用示例
-// while_cl(['000',111,222,3333,4444],function(item){console.log(item);}, 3);
+// while_cl(['000',111,222,3333,4444], function(item){console.log(item);}, 3);
 
 /**
  * 3.2 条件语句
@@ -289,8 +295,8 @@ var while_cl = function(arr, func, num){
  * 比较大小，小排前面。数组不限制长度
  * 展开时，left 和 right数组内部排列顺序，此时长度为1，或者2
  * 展开后，left 和 right数组比较大小，一次循环后结束
- * @param {*} left 左数组
- * @param {*} right 右数组
+ * @param {Array} left 左数组
+ * @param {Array} right 右数组
  */
 var merge = function(left, right) {
   var result = []; // 暂存数组，存小值
@@ -308,8 +314,8 @@ var merge = function(left, right) {
 };
 
 /**
- * 排序数组，递归处理 分成左右两个数组，依次展开，直到长度为1时返回
- * @param {*} items 被排序的数组
+ * mergeSort 排序数组，递归处理 分成左右两个数组，依次展开，直到长度为1时返回
+ * @param {Array} items 被排序的数组
  */
 var mergeSort = function(items){
   // 递归的终止条件
@@ -329,8 +335,8 @@ var mergeSort = function(items){
 // console.log(mergeSort([123,56,25,4,0]));
 
 /**
- * 排序数组，迭代处理
- * @param {*} items 被排序的数组
+ *  排序数组，迭代处理
+ * @param {Array} items 被排序的数组
  */
 var mergeSort = function(items){
   if(items.length === 1){
@@ -367,6 +373,8 @@ var mergeSort = function(items){
 
 // console.log(mergeSort([123,56,25,4,0]));
 
+
+// P81 第五章 字符串和正则表达式 ==============
 // P90 正则表达式- 重复与回溯
 var str = '<p>Para 1.</p>'+
           '<img src="1.jpg">'+
@@ -440,3 +448,155 @@ var trim2 = function(str){
 
   return str.slice(0, end+1);
 }
+
+// P107 第六章 快速响应的用户界面 ==============
+// UI队列 会按要求插入 执行函数（定时器中函数） 或 UI界面更新
+// UI线程 空闲后，才会接收 UI队列 中的UI线程 并执行
+
+// P113 定时器基础 
+// 包含setTimeout的父函数执行完后，才会执行setTimeout中调用函数。
+var testSetTimeout = function(){
+  document.getElementById("btn").addEventListener('click', function(event){
+    var a,b;
+    console.log(+new Date());
+    
+    setTimeout(function(){
+      console.log('setTimeout 运行', (a=+new Date()));
+      console.log(a-b);
+    }, 0);
+
+    console.log('another 运行', (b=+new Date()));
+  });
+};
+testSetTimeout();
+
+// P116 使用定时器处理数组
+/**
+ * 数组分布处理
+ * @param {Array} process 数组
+ * @param {Function} process 处理函数
+ * @param {Function} callback 完成回调
+ */
+var processArray = function(items, process, callback){
+  // 复制数组，浅复制，
+  var todo = items.concat();
+  // 按时间分割运行
+  setTimeout(function(){
+    process(todo.shift()); // 运行一次
+    // 数组长度不为零，继续执行
+    if(todo.length > 0){
+      setTimeout(arguments.callee, 25); // 重复执行
+    }else{
+      // 执行完回调函数
+      callback && callback(items);  
+    }
+  }, 25);
+};
+
+// 测试 processArray
+// (function processArray_test(){
+//   var items = [0,1,2,3,4,5,6];
+//   function log(val){console.log(val)}
+//   processArray(items, log, function(arr){log(['已完成！', arr.length])});
+// })();
+
+// P116 分割任务
+/**
+ * 分割任务 ：要求 可以异步处理，不影响用户体验或造成相关代码错误
+ * @param {[{method: Function, context: Object}]} steps 数字化函数对象 [{method: func, context: context}]
+ * @param {Array} args 每个函数执行的参数
+ * @param {Function} callback 执行完 的 回调函数
+ */
+var multistep = function(steps, args, callback){
+  var tasks = steps.concat();
+  setTimeout(function(){
+    // 执行下一个任务
+    var obj = tasks.shift();
+    var task = obj.method; // 方法
+    var context = obj.context || null; // 执行环境
+    task.apply(context, args);
+    // 检查是否有其他任务
+    if(tasks.length > 0){
+      setTimeout(arguments.callee, 25);
+    }else{
+      callback && callback();
+    }
+  }, 25);
+};
+
+// 测试 multistep
+// (function multistep_test(id){
+//   function log(val){
+//     console.log(val);
+//   }
+//   var tasks = [{
+//     method: function(id){log(['one', id]);}
+//   }, {
+//     method: function(id){log(['two', id]);}
+//   }];
+//   multistep(tasks, [id], function(){log('执行回调函数');});
+// })('id111');
+
+// P118 记录代码运行时间
+/**
+ * P118记录函数执行时间
+ * @param {Function} func 执行函数
+ * @param {Boolean} onlyShowTimerOuter 默认为 false
+ */
+var timeRecord = function(func, onlyShowTimerOuter){
+  var start= +new Date(), stop, timeLong, str= '%c 函数' + func.name + ' 执行时间';
+  func && func();
+  timeLong = (stop= +new Date()) - start;
+  if(timeLong < 50){
+    if(!onlyShowTimerOuter){
+      str+= '^-^：';
+      str+= timeLong;
+      console.log(str, 'font-size:14px;color:white;background: green;line-height: 1.6;');
+    }
+  }else{
+    str+= '*_*：';
+    str+= timeLong;
+    console.log(str, 'font-size:14px;color:white;background: red;line-height: 1.6;');
+  }
+};
+// 测试 timeRecord
+// timeRecord(function someThing(){
+//   var count = 1000000, str='';
+//   while(count--){
+//     str+='A'
+//   }
+// });
+
+/**
+ * P119 数组分布处理 - 改进 时间检测机制 在50ms时间内执行完的函数 可以批量运行
+ * @param {Array} process 数组
+ * @param {Function} process 处理函数
+ * @param {Function} callback 完成回调
+ */
+var timedProcessArray = function(items, process, callback){
+  // 复制数组，浅复制，
+  var todo = items.concat();
+  // 按时间分割运行
+  setTimeout(function(){
+    var start = +new Date();
+    // do while 运行多次  在50ms时间内执行完的函数
+    do {
+      process(todo.shift());
+    } while(todo.length >0 && (+new Date() - start < 50));
+    
+    // 数组长度不为零，继续执行
+    if(todo.length > 0){
+      setTimeout(arguments.callee, 25); // 重复执行
+    }else{
+      // 执行完回调函数
+      callback && callback(items);  
+    }
+  }, 25);
+};
+
+// 测试 processArray
+// (function timedProcessArray_test(){
+//   var items = ['a','b','c','d','e','f','g'];
+//   function log(val){console.log(val)}
+//   timedProcessArray(items, log, function(arr){log(['已完成！', arr.length])});
+// })();
