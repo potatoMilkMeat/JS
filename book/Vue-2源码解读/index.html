@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Vue-2.0源码解读</title>
+  <style>
+    *{padding: 0;margin: 0;}
+    html{font-size: 16px;color: #222;line-height: 1.6;}
+    h3{font-size: 20px;color: #000;line-height: 2.4;padding-left: 2em;}
+    #cont{position:absolute; left: 0;width: 100%;top: 53px;bottom: 40px;overflow-y: scroll;}
+    p{padding: 0 10px;padding-top: 20px;font-weight: bold;font-family: "微软雅黑";}
+    code{padding:10px;display: block;color: #000; background: #eee;white-space: pre;font-family: Consolas, 'Courier New', monospace;}
+  </style>
+  
+</head>
+<body>
+  <h3>Vue-2.0源码解读</h3>
+  <hr>
+  <div id="cont"></div>
+  <script src="../js_lib/writeDom.js">/* 加载后立即运行 */</script>
+  <script src="./main.js" defer>/* 外链defer 最后执行 */</script>
+  <script defer>
+  var creatDomFromData = function(){
+    // 显示的数据
+    var data = [{
+      p: 'P7 2.2 - 追踪变化',
+      code: 'var defineReactive = function (data, key, val){}'
+    },{
+      p: 'P8 2.4 - 收集依赖-耦合',
+      code: 'var defineReactive = function(data, key, val){}'
+    },{
+      p: 'P9 2.4 - 收集依赖类-解耦Dep类',
+      code: 'class Dep{};\nvar defineReactive = function(data, key, val){}'
+    },{
+      p: 'P10 2.6 - 观察类Watcher，添加事件和处理方法',
+      code: 'class Watch{}'
+    },{
+      p: 'P10 解析路径',
+      code: 'var parsePath = function(path) {}'
+    },{
+      p: 'xxxx',
+      code: ''
+    },{
+      p: 'xxxx',
+      code: ''
+    },{
+      p: 'xxxx',
+      code: ''
+    },{
+      p: 'xxxx',
+      code: ''
+    },{
+      p: 'xxxx',
+      code: ''
+    },{
+      p: 'xxxx',
+      code: ''
+    },{
+      p: 'xxxx',
+      code: ''
+    },{
+      p: 'xxxx',
+      code: ''
+    },{
+      p: 'xxxx',
+      code: ''
+    }];
+    var func =function(){
+      writeDom(data);
+    };
+    func(); // 执行
+    return func;
+  }();
+  </script>
+</body>
+</html>
