@@ -60,7 +60,6 @@
 class Dep{
   constructor(){
     window.subs=this.subs =[];
-    console.log(this.subs);
   }
   // 添加依赖
   addSub(sub){
@@ -97,8 +96,7 @@ class Dep{
   }
   // 避免添加重复依赖
   noRepeat(sub){
-    if(sub.length){
-      console.log('避免添加重复依赖', this.subs.indexOf(sub));
+    if(this.subs.length){
       return ~this.subs.indexOf(sub);
     }
   }
@@ -160,7 +158,6 @@ class Watch{
   }
   get(){
     // 将当前对象存储到 公共缓存点 window.target
-    console.log(this, a=== this);
     window.target = this;
     // 获取data.a.b.c的值
     var value = this.getter.call(this.vm, this.vm);
@@ -197,7 +194,6 @@ var parsePath = function(path) {
     }
   }
 }
-
 
 // 测试Watch - 依赖 defineReactive(a, 'id', 1235); 先实现数据监听
 a.watch = new Watch(a, 'id', function (newVal, oldVal) {
@@ -270,4 +266,5 @@ var b = {
   arr: [0,1,2,3]
 }
 
-// c = new Observer(b); // c.value === b
+c = new Observer(b); // c.value === b
+window.target = func;
