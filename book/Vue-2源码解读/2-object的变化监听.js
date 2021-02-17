@@ -239,7 +239,7 @@ class Observer{
   constructor(value){
     this.value = value;
     // 只允许对象运行
-    if(Object.prototype.toString.call(value) === "[object Object]"){
+    if(!isArray(value)){
       this.walk(value);
     }
   }
