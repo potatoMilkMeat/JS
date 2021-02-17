@@ -63,7 +63,7 @@ class Dep{
   }
   // 添加依赖
   addSub(sub){
-    if(this.noRepeat(sub)){
+    if(this.isRepeat(sub)){
       return;
     }
     this.subs.push(sub);
@@ -95,7 +95,7 @@ class Dep{
     }
   }
   // 避免添加重复依赖
-  noRepeat(sub){
+  isRepeat(sub){
     if(this.subs.length){
       return ~this.subs.indexOf(sub);
     }
@@ -145,7 +145,7 @@ console.log(a.id, (a.id='xxx'));
  * 监听，添加事件和处理方法
  * @param {object} vm 对象
  * @param {String} expOrFn .表达式，eg: 'a', 'a.b'
- * @param {Function} cb  
+ * @param {Function} cb
  */
 class Watch{
   constructor(vm, expOrFn, cb){
@@ -205,6 +205,32 @@ console.log('因多次监听导致同样的问题--多到爆炸，并且watch �
 a.id='多次回调执行';
 
 /**
+ * defineReactive 变种方法，主要添加递归子属性
+ */
+var defineReactive = function(data, key, val){
+  // 新增， 递归子属性
+  if(typeof val==='object'){
+    new Observer(val);
+  }
+  var dep = new Dep(); // 依赖缓存位置 Dep.subs
+  Object.defineProperty(data, key, {
+    enumerable: true,
+    configurable: true,
+    get: function(){
+      dep.depend(); // 存入 需要改变全局变量 window.target
+      return val;
+    },
+    set: function(newVal){
+      if(val === newVal){
+        return;
+      }
+      val = newVal;
+      dep.notify(); // 触发
+    }
+  });
+};
+
+/**
  * P12 Observer 递归侦测所有key
  * 对申明后 再新增属性和删除属性无效果
  * @param {Object} value 
@@ -213,7 +239,7 @@ class Observer{
   constructor(value){
     this.value = value;
     // 只允许对象运行
-    if(Array.prototype.toString.call(value) === "[object Object]"){
+    if(Object.prototype.toString.call(value) === "[object Object]"){
       this.walk(value);
     }
   }
@@ -225,35 +251,11 @@ class Observer{
   walk(obj){
     var keys = Object.keys(obj);
     for(var i=0;i<keys.length;i++){
-      this.defineReactive(obj, keys[i], obj[keys[i]]); // 书本缺少 this.  导致报错 
+      defineReactive(obj, keys[i], obj[keys[i]]);
     }
-  }
-  /**
-   * defineReactive 变种方法，主要添加递归子属性
-   */
-  defineReactive(data, key, val){
-    // 新增， 递归子属性
-    if(typeof val==='object'){
-      new Observer(val);
-    }
-    var dep = new Dep(); // 依赖缓存位置 Dep.subs
-    Object.defineProperty(data, key, {
-      enumerable: true,
-      configurable: true,
-      get: function(){
-        dep.depend(); // 存入 需要改变全局变量 window.target
-        return val;
-      },
-      set: function(newVal){
-        if(val === newVal){
-          return;
-        }
-        val = newVal;
-        dep.notify(); // 触发
-      }
-    });
   }
 }
+
 
 // 测试示例
 var b = {
