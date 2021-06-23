@@ -4,5 +4,5 @@ function printName1 (person) {
 }
 var cl1 = { name: 'chenglong', age: 33 };
 var cyx1 = { name: 'chengyuxun', age: 33, love: 'game' };
-printName(cl1);
-printName(cyx1);
+printName1(cl1);
+printName1(cyx1);
